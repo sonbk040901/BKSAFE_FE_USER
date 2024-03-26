@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+  </head>
+  <body>
+    <button id="btn">connect</button>
+  </body>
+  <script>
+    let count = 0;
+    const btn = document.getElementById("btn");
+    btn.addEventListener("click", () => {
+      const token =
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb25kcml2ZXJAZ21haS5jb20iLCJpYXQiOjE3MDY0MzcxMzAsImV4cCI6MTcwNzMwMTEzMH0.YkUPgQdcjdXGgNiRIklabVjOQiXlVy9MZSpT8Av5Kkk";
+      const socket = new SockJS("http://localhost:8080/ws", null, {
+        // transports: ["websocket"],
+        transports: ["xhr-streaming"],
+        headers: {
+          Authorization: "Bearer " + token, //al
+        },
+      });
+      const stompClient = Stomp.over(socket);
+      console.log(stompClient);
+      // stompClient.connectHeaders = {
+      //   Authorization: 'Bearer ' + token, //also tried x-auth-token
+      // };
+      stompClient.connect({ username: `user_${++count}` }, () => {
+        stompClient.subscribe("/user/topic/message", (message) => {
+          console.log(message);
+        });
+        stompClient.subscribe("/topic/message", (message) => {
+          console.log(message);
+        });
+        stompClient.send("/app/hello", {}, JSON.stringify({ content: "test" }));
+      });
+    });
+  </script>
+</html>
