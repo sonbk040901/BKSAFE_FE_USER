@@ -1,14 +1,15 @@
 import { useEffect } from "react";
-import { findCarDrivers } from "../api";
+import { findCarDrivers } from "../api_v1";
 import { useMutation } from "@tanstack/react-query";
 import { showNativeAlert } from "../utils/alert";
 
-type LocationType = {
+// type LocationType = {
+//   latitude: number;
+//   longitude: number;
+// };
+type Props = {
   latitude: number;
   longitude: number;
-};
-type Props = {
-  location: LocationType;
   address: string;
 };
 export default (currentLocation?: Props, isEnable: boolean = true) => {
@@ -16,8 +17,8 @@ export default (currentLocation?: Props, isEnable: boolean = true) => {
     mutationFn: async () => {
       if (!currentLocation) return [];
       return findCarDrivers({
-        lat: currentLocation.location.latitude,
-        lng: currentLocation.location.longitude,
+        lat: currentLocation.latitude,
+        lng: currentLocation.longitude,
       }).then((res) => {
         showNativeAlert(`Tìm thấy ${res.length} tài xế gần bạn`);
         return res;

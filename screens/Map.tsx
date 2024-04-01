@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Button, Dialog, Icon, Image, Text } from "@rneui/themed";
+import { Button, Dialog, Icon, Text } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
+import { API_KEY } from "../api/ggmap";
+import useCalculateCost from "../api/hook/useCalculateCost";
+import useFindDriver from "../api/hook/useFindDriver";
 import PostionsBar from "../components/map/PositionsBar";
 import { COLOR } from "../constants/color";
 import { IMAGE } from "../constants/image";
-import useCalculateMoney from "../hook/useCalculateMoney";
+import useCreateRequest from "../hook/useCreateRequest";
 import useLocation from "../hook/useLocation";
 import useOpacityStyle from "../hook/useOpacityStyle";
 import usePosition from "../hook/usePosition";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
-import MapViewDirections from "react-native-maps-directions";
-import { API_KEY } from "../api/ggmap";
-import useFindDriver from "../hook/useFindDriver";
-import useCreateRequest from "../hook/useCreateRequest";
 
 interface MapProps {
   navigation: RootNavigationProp;
@@ -25,20 +25,20 @@ interface MapProps {
 
 const Map = ({ navigation, route }: MapProps) => {
   const data = route.params?.data;
-  const mapRef = React.useRef<MapView>(null);
-  const { status: createRequestStatus, createRequest } = useCreateRequest();
   const [isEdit, setIsEdit] = useState(!data);
   const location = useLocation(!isEdit);
+  const { money, status, calculate } = useCalculateCost();
+  const { status: createRequestStatus, createRequest } = useCreateRequest();
   const { positions, addAddress, addLocation, remove, replace } = usePosition(
-    data?.locations?.map((l) => ({
-      address: l.address,
-      location: l,
-    })),
+    data?.locations,
   );
-  const [money, calculateStatus, calculate] = useCalculateMoney();
-  const drivers = useFindDriver(positions[0], isEdit);
-  // hide all content when drag map
+  const { drivers } = useFindDriver({
+    location: positions[0],
+    autoFetch: isEdit,
+  });
   const [opacityStyle, setShowContent] = useOpacityStyle();
+  const mapRef = React.useRef<MapView>(null);
+  // hide all content when drag map
   const handlePanDrag = () => setShowContent(false);
   const handlePanDragEnd = () => setShowContent(true);
   //
@@ -49,15 +49,9 @@ const Map = ({ navigation, route }: MapProps) => {
     rest.pop();
     createRequest({
       distance,
-      pickup: { ...l1.location, address: l1.address },
-      dropOff: {
-        ...l2.location,
-        address: l2.address,
-      },
-      stops: rest.map((p) => ({
-        ...p.location,
-        address: p.address,
-      })),
+      pickup: l1,
+      dropOff: l2,
+      stops: rest,
     });
   };
 
@@ -80,10 +74,7 @@ const Map = ({ navigation, route }: MapProps) => {
     const sto = setTimeout(() => {
       calculate({
         distance,
-        locations: positions.map((p) => ({
-          ...p.location,
-          address: p.address,
-        })),
+        numberOfWaypoints: positions.length - 2,
       });
     }, 300);
     return () => clearTimeout(sto);
@@ -91,18 +82,15 @@ const Map = ({ navigation, route }: MapProps) => {
   useEffect(() => {
     if (positions.length < 2) return;
     setTimeout(() => {
-      mapRef.current?.fitToCoordinates(
-        positions.map((p) => p.location),
-        {
-          edgePadding: {
-            top: 150 + 20 * positions.length,
-            right: 50,
-            bottom: 50,
-            left: 50,
-          },
-          animated: true,
+      mapRef.current?.fitToCoordinates(positions, {
+        edgePadding: {
+          top: 150 + 20 * positions.length,
+          right: 50,
+          bottom: 50,
+          left: 50,
         },
-      );
+        animated: true,
+      });
     }, 300);
   }, [positions]);
   useEffect(() => {
@@ -138,15 +126,14 @@ const Map = ({ navigation, route }: MapProps) => {
             onPress={() => navigation.goBack()}
           />
         </View>
-        {positions.length > 0 && (
-          <PostionsBar
-            editable={isEdit}
-            data={positions.map((p) => p.address)}
-            onChange={replace}
-            onAdd={addAddress}
-            onRemove={remove}
-          />
-        )}
+        <PostionsBar
+          visible={positions.length > 0}
+          editable={isEdit}
+          data={positions.map((p) => p.address)}
+          onChange={replace}
+          onAdd={addAddress}
+          onRemove={remove}
+        />
       </Animated.View>
       <MapView
         ref={mapRef}
@@ -164,27 +151,17 @@ const Map = ({ navigation, route }: MapProps) => {
         onPanDrag={handlePanDrag}
         onRegionChangeComplete={handlePanDragEnd}
       >
-        {/* {location && (
-          <Marker
-            coordinate={location}
-            title="Vị trí đợi tài xế"
-            image={IMAGE.pin}
-            style={{ width: 40, height: 40, backgroundColor: "red" }}
-          ></Marker>
-        )} */}
         {positions.length > 1 && (
           <MapViewDirections
             apikey={API_KEY}
             region="vn"
             language="vi"
             timePrecision="now"
-            origin={positions[0].location}
-            destination={positions[positions.length - 1].location}
-            strokeWidth={5}
+            origin={positions[0]}
+            destination={positions[positions.length - 1]}
+            strokeWidth={6}
             strokeColor={COLOR.primary}
-            waypoints={positions
-              .slice(1, positions.length - 1)
-              .map((p) => p.location)}
+            waypoints={positions.slice(1, positions.length - 1)}
             geodesic
             mode="DRIVING"
             onReady={({
@@ -203,11 +180,11 @@ const Map = ({ navigation, route }: MapProps) => {
           />
         )}
         {positions.map((p, i) => {
+          const { address, ...location } = p;
           return (
             <Marker
-              key={p.address}
-              coordinate={p.location}
-              // image={i == 0 ? IMAGE.pin : IMAGE.homePin}
+              key={address}
+              coordinate={location}
             >
               <Animated.Image
                 source={
@@ -225,8 +202,8 @@ const Map = ({ navigation, route }: MapProps) => {
         })}
         {drivers.map((d) => (
           <Marker
-            key={d.username}
-            coordinate={{ latitude: d.lat, longitude: d.lng }}
+            key={d.id}
+            coordinate={d}
             image={IMAGE.driverPin}
           ></Marker>
         ))}
@@ -235,7 +212,9 @@ const Map = ({ navigation, route }: MapProps) => {
         <Button
           radius="lg"
           disabledStyle={styles.disable}
-          disabled={money === undefined || createRequestStatus === "pending" || !isEdit}
+          disabled={
+            money === undefined || createRequestStatus === "pending" || !isEdit
+          }
           onPress={handleCreateRequest}
         >
           <View style={[styles.submitBtn]}>
@@ -285,6 +264,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   footer: {
+    backgroundColor: "white",
     position: "absolute",
     bottom: 25,
     left: 2,

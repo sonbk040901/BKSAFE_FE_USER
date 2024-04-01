@@ -3,6 +3,7 @@ import { Text, View, StyleSheet } from "react-native";
 import AppWrapper from "../../components/AppWrapper";
 import { AppNavigationProp } from "../../types/navigation";
 import { Button } from "@rneui/themed";
+import { authApi } from "../../api";
 
 interface SettingProps {
   navigation: AppNavigationProp;
@@ -13,7 +14,14 @@ const Setting = ({ navigation }: SettingProps) => {
     <AppWrapper>
       <View style={styles.container}>
         <Text></Text>
-        <Button onPress={() => navigation.replace("Auth")}>Đăng xuất</Button>
+        <Button
+          onPress={() => {
+            authApi.logout();
+            navigation.replace("Auth");
+          }}
+        >
+          Đăng xuất
+        </Button>
       </View>
     </AppWrapper>
   );

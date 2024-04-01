@@ -3,12 +3,11 @@ import {
   requestForegroundPermissionsAsync,
 } from "expo-location";
 import { useEffect, useState } from "react";
-import useFetch from "./useFetch";
-import { User } from "../types/domain";
+import useProfile from "../api/hook/useProfile";
 type AuthStatus = "undetermined" | "authenticated" | "unauthenticated";
 
 export default () => {
-  const { status, response } = useFetch<{ data: User }>("me", "get");
+  const { status } = useProfile();
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
     PermissionStatus.UNDETERMINED,
   );

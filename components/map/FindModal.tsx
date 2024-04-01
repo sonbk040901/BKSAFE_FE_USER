@@ -9,9 +9,9 @@ import {
   ActivityIndicator,
   Modal,
 } from "react-native";
-import { autoComplete, AutoCompleteResultType } from "../../api/ggmap";
 import { useFocusEffect } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
+import { AutoCompleteResultType, autoComplete } from "../../api/ggmap";
 interface FindAddressModalPropsType extends ComponentProps<typeof Modal> {
   placeholder?: string;
   value?: string;
@@ -187,26 +187,24 @@ const SearchResult = ({
   if (loading) return <Loading />;
   if (!results) return <EmptyResult />;
   return (
-    <>
-      <FlatList
-        data={results.predictions}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                onSelectResult?.(item.description);
-              }}
-              style={sr.item}
-            >
-              <Text style={sr.itemTitle}>
-                {item.structured_formatting.main_text}
-              </Text>
-              <Text style={sr.itemDescription}>{item.description}</Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
-    </>
+    <FlatList
+      data={results.predictions}
+      renderItem={({ item }) => {
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              onSelectResult?.(item.description);
+            }}
+            style={sr.item}
+          >
+            <Text style={sr.itemTitle}>
+              {item.structured_formatting.main_text}
+            </Text>
+            <Text style={sr.itemDescription}>{item.description}</Text>
+          </TouchableOpacity>
+        );
+      }}
+    />
   );
 };
 const sr = StyleSheet.create({

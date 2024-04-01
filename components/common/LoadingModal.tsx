@@ -1,8 +1,7 @@
-import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "@rneui/themed";
 import React, { ComponentProps } from "react";
 import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
 import { COLOR } from "../../constants/color";
-import { Image } from "@rneui/themed";
 import { IMAGE } from "../../constants/image";
 
 const LoadingModal = (props: ComponentProps<typeof Modal>) => {

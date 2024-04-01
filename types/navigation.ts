@@ -1,19 +1,12 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { LocationType } from "./location";
-type RecentRequest = {
-  locations: LocationType[];
-  _id: string;
-  id: string;
-  price: number;
-  status: "pending" | "accepted" | "driving" | "completed";
-};
+import { Booking } from "../api";
 export type RootNavigationParamList = {
   Splash: undefined;
   App: undefined;
   Map: {
-    data?: RecentRequest
+    data: Nullable<Booking>;
   };
   Auth: undefined;
 };

@@ -1,15 +1,17 @@
 import axios from "axios";
+import defaultBuildUrl from "../utils/searchParam";
 
-const BASE_URL = "https://maps.googleapis.com/maps/api";
-export const API_KEY = "AIzaSyBdPsHYo7lp6JL3fsQwlcTQCKvbBlT50rE";
+const GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api";
+export const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!;
 const instance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: GOOGLE_MAPS_BASE_URL,
 });
-export const autoComplete = async (input: string) => {
-  const res = await instance.get<AutoCompleteResultType>(
-    `place/autocomplete/json?key=${API_KEY}&region=vn&language=vi&input=${input}`,
-  );
-  return res.data;
+
+const buildUrl = (path: string, params: Record<string, unknown>) => {
+  params["key"] = API_KEY;
+  params["region"] = "vn";
+  params["language"] = "vi";
+  return defaultBuildUrl(path, params);
 };
 export type AutoCompleteResultType = {
   predictions: {
@@ -24,18 +26,34 @@ export type GeoCodeResultType = {
     geometry: { location: { lat: number; lng: number } };
   }[];
 };
+
+export const autoComplete = async (input: string) => {
+  const path = "/place/autocomplete/json";
+  const url = buildUrl(path, { input });
+  const res = await instance.get<AutoCompleteResultType>(url);
+  return res.data;
+};
+
 export const geoCode = async (address: string) => {
-  const res = await instance.get<GeoCodeResultType>(
-    `/geocode/json?key=${API_KEY}&&region=vn&language=vi&address=${address}`,
-  );
+  const path = "/geocode/json";
+  const url = buildUrl(path, { address });
+  const res = await instance.get<GeoCodeResultType>(url);
   const data = res.data;
   return data.results?.[0].geometry.location;
 };
 
 export const geoReverse = async (lat: number, lng: number) => {
-  const res = await instance.get<GeoCodeResultType>(
-    `/geocode/json?key=${API_KEY}&&region=vn&language=vi&latlng=${lat},${lng}`,
-  );
+  const path = "/geocode/json";
+  const url = buildUrl(path, { latlng: `${lat},${lng}` });
+  const res = await instance.get<GeoCodeResultType>(url);
   const data = res.data;
-  return data.results?.[0].formatted_address;
+  const results = data.results
+  // .sort((a, b) => {
+  //   return (
+  //     b.geometry.location.lat +
+  //     b.geometry.location.lng -
+  //     (a.geometry.location.lat + a.geometry.location.lng)
+  //   );
+  // });
+  return results?.[0].formatted_address;
 };

@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import {
-  Text,
-  View,
-  StyleSheet,
-  Modal,
   KeyboardAvoidingView,
+  Modal,
+  StyleSheet
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import Animated, { SlideInDown, SlideInUp } from "react-native-reanimated";
+import Animated, { SlideInDown } from "react-native-reanimated";
 
-interface SearchModalProps {}
-
-const SearchModal = (props: SearchModalProps) => {
+const SearchModal = () => {
   const [visible, setVisible] = useState(true);
   return (
     <Modal

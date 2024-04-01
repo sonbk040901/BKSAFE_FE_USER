@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { COLOR } from "../constants/color";
 import CustomDrawerItem from "./CustomDrawerItem";
-import { logout } from "../api";
+import { logout } from "../api_v1";
 import { AppNavigationProp } from "../types/navigation";
 const drawerItems: {
   name: string;

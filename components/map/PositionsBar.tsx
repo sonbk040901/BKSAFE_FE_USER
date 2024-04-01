@@ -13,6 +13,7 @@ import { Divider, Icon } from "@rneui/themed";
 import FindAdress from "./FindModal";
 
 interface PostionsBarProps {
+  visible?: boolean;
   style?: StyleProp<ViewStyle>;
   data?: string[];
   editable?: boolean;
@@ -22,13 +23,12 @@ interface PostionsBarProps {
 }
 
 export default function PostionsBar({
+  visible = true,
   style,
   data = [],
   editable = true,
   onChange,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAdd,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onRemove,
 }: PostionsBarProps) {
   const [modifyIndex, setModifyIndex] = useState<number | null>();
@@ -42,6 +42,7 @@ export default function PostionsBar({
     if (!editable) return;
     setModifyIndex(v);
   };
+  if (!visible) return null;
   return (
     <Card
       radius={10}
@@ -98,25 +99,24 @@ export default function PostionsBar({
             );
           return <CustomDivider key={i} />;
         })}
-      {editable && (
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            right: 5,
-            bottom: -40,
-            backgroundColor: "white",
-            borderRadius: 999,
-            padding: 1,
-          }}
-          onPress={() => setModifyIndex(null)}
-        >
-          <Icon
-            name="add-circle"
-            size={30}
-            color="gray"
-          />
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          right: 5,
+          bottom: -40,
+          backgroundColor: "white",
+          borderRadius: 999,
+          padding: 1,
+          display: editable ? "flex" : "none",
+        }}
+        onPress={() => setModifyIndex(null)}
+      >
+        <Icon
+          name="add-circle"
+          size={30}
+          color="gray"
+        />
+      </TouchableOpacity>
     </Card>
   );
 }

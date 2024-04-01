@@ -5,11 +5,10 @@ import { Avatar, Button, Divider, Icon, Skeleton } from "@rneui/themed";
 import { COLOR } from "../../constants/color";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView from "react-native-maps";
-import { RecentRequest } from "../../api";
+import { Booking, BookingStatus } from "../../api";
 type CardTravelProps = {
   title: string;
-  data?: RecentRequest;
-  // status: "none" | "pending" | "accepted" | "completed" | "driving";
+  data: Nullable<Booking>;
   onPress?: () => void;
 };
 type DriverProps = {
@@ -17,13 +16,15 @@ type DriverProps = {
   name: string;
   star: number;
 };
-const statusMapping = {
+const statusMapping: Record<BookingStatus | "none", string> = {
   none: "Thuê tài xế?",
-  pending: "Đang tìm tài xế phù hợp...",
-  accepted: "Tài xế đang trên đường tới...",
+  PENDING: "Đang tìm tài xế phù hợp...",
+  ACCEPTED: "Tài xế đang trên đường tới...",
   // driving: (next: string) => `Điểm đến tiếp theo: ${next}`,
-  driving: "Chuyến đi đang diễn ra...",
-  completed: "Chuyến đi đã hoàn thành",
+  DRIVING: "Chuyến đi đang diễn ra...",
+  COMPLETED: "Chuyến đi đã hoàn thành",
+  REJECTED: "Tài xế đã từ chối chuyến đi",
+  CANCELLED: "Chuyến đi đã bị hủy",
 };
 const CardTravel = (props: CardTravelProps) => {
   const { title, onPress, data } = props;
@@ -55,17 +56,18 @@ const CardTravel = (props: CardTravelProps) => {
 
             <DriverInfo
               driverProps={
-                data?.driver && {
-                  avatar: data?.driver.avatar,
-                  name: data.driver.fullname,
-                  star: data.driver.starAvg,
-                }
+                (data?.driver && {
+                  avatar: data.driver.avatar,
+                  name: data.driver.fullName,
+                  star: data.driver?.rating,
+                }) ||
+                undefined
               }
             />
           </View>
         )}
       </View>
-      {status !== "completed" && (
+      {status !== "COMPLETED" && (
         <>
           <Divider
             color="#EBF0FA"
@@ -77,7 +79,7 @@ const CardTravel = (props: CardTravelProps) => {
                 style={[
                   styles.footerTitle,
                   styles[
-                    status === "pending" || status === "accepted"
+                    status === "PENDING" || status === "ACCEPTED"
                       ? "footerTitleWarn"
                       : "footerTitleInfo"
                   ],

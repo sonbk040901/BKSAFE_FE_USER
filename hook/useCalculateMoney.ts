@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { LocationType } from "../types/location";
-import { getCost } from "../api";
+import { getCost } from "../api_v1";
 const useCalculateMoney = () => {
   const {
     data: money,

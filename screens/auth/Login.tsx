@@ -10,15 +10,16 @@ import {
 } from "react-native";
 import AuthWrapper from "../../components/AuthWrapper";
 import { COLOR } from "../../constants/color";
-import useLogin from "../../hook/useLogin";
 import type { AuthNavigationProp } from "../../types/navigation";
+import useLogin from "../../api/hook/useLogin";
 
 const Login = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const emailRef = useRef<PropsWithChildren<TextInput>>(null);
-  const { setEmail, setPassword, submit, status } = useLogin(() =>
-    navigation.replace("App"),
-  );
+  const { setEmail, setPassword, submit, status } = useLogin();
+  useEffect(() => {
+    if (status === "success") navigation.replace("App");
+  }, [navigation, status]);
   useEffect(() => {
     const sto = setTimeout(() => {
       emailRef.current?.focus();

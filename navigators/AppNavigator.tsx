@@ -11,7 +11,8 @@ const Drawer = createDrawerNavigator();
 const AppNavigator = () => {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawer {...props} />}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      drawerContent={(props: any) => <CustomDrawer {...props} />}
       screenOptions={{
         swipeEnabled: true,
         swipeEdgeWidth: 50,

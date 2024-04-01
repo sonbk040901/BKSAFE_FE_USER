@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getAllRequests } from "../api";
+import { getAllRequests } from "../api_v1";
 
 export default () => {
   const [isPending, setIsPending] = useState(true);

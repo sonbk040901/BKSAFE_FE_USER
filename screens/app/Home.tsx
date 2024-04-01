@@ -1,23 +1,18 @@
-import React, { FC, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import type { AppNavigationProp } from "../../types/navigation";
-import { COLOR } from "../../constants/color";
 import { Button, Text } from "@rneui/themed";
-import AppWrapper from "../../components/AppWrapper";
-import TravelCard from "../../components/home/TravelCard";
-import Card from "../../components/Card";
-import useGetRecentRequests from "../../hook/useGetRecentRequests";
+import React, { FC } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
+import { useRecentsBooking } from "../../api/hook";
+import AppWrapper from "../../components/AppWrapper";
+import Card from "../../components/Card";
+import TravelCard from "../../components/home/TravelCard";
+import { COLOR } from "../../constants/color";
+import type { AppNavigationProp } from "../../types/navigation";
 interface HomeProps {
   navigation: AppNavigationProp;
 }
 const Home: FC<HomeProps> = ({ navigation }) => {
-  const { data, fetchData, isPending } = useGetRecentRequests();
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-  
-
+  const { data, refetch, status } = useRecentsBooking();
   return (
     <AppWrapper>
       <View style={styles.container}>
@@ -30,14 +25,14 @@ const Home: FC<HomeProps> = ({ navigation }) => {
           <Text style={styles.cardAction}>
             <Button
               title={
-                data?.recent
+                data?.current
                   ? "Xem chuyến đi hiện tại"
                   : "Thuê tài xế ngay bây giờ"
               }
               radius="md"
               buttonStyle={{ backgroundColor: COLOR.primary }}
               onPress={() => {
-                navigation.push("Map", { data: data?.recent });
+                navigation.push("Map", { data: data?.current ?? null });
               }}
               icon={{
                 name: "chevron-right",
@@ -57,8 +52,8 @@ const Home: FC<HomeProps> = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={isPending}
-              onRefresh={fetchData}
+              refreshing={status === "loading"}
+              onRefresh={refetch}
             />
           }
         >
@@ -68,15 +63,17 @@ const Home: FC<HomeProps> = ({ navigation }) => {
             >
               <TravelCard
                 title="Chuyến đi hiện tại"
-                data={data.recent}
-                onPress={() => navigation.push("Map", { data: data.recent })}
+                data={data.current}
+                onPress={() => navigation.push("Map", { data: data.current })}
               />
-              {data.completed && (
+              {data.recent && (
                 <TravelCard
                   title="Chuyến đi trước"
-                  data={data.completed}
+                  data={data.recent}
                   onPress={() =>
-                    navigation.push("Map", { data: data.completed })
+                    navigation.push("Map", {
+                      data: data.recent,
+                    })
                   }
                 />
               )}

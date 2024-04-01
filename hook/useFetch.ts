@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../api";
+import { axiosInstance } from "../api_v1";
 
 type MethodType = "get" | "post" | "put" | "delete" | "patch";
 type StatusType = "loading" | "error" | "success";
