@@ -12,14 +12,21 @@ import AuthWrapper from "../../components/AuthWrapper";
 import { COLOR } from "../../constants/color";
 import type { AuthNavigationProp } from "../../types/navigation";
 import useLogin from "../../api/hook/useLogin";
+import { useInitAppContext } from "../../hook/useInitApp";
 
 const Login = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const emailRef = useRef<PropsWithChildren<TextInput>>(null);
   const { setEmail, setPassword, submit, status } = useLogin();
+  const { data, refetch } = useInitAppContext();
   useEffect(() => {
-    if (status === "success") navigation.replace("App");
-  }, [navigation, status]);
+    if (status === "success") refetch();
+  }, [refetch, status]);
+  useEffect(() => {
+    if (data) {
+      navigation.replace("App", { userInfo: data });
+    }
+  }, [data, navigation]);
   useEffect(() => {
     const sto = setTimeout(() => {
       emailRef.current?.focus();

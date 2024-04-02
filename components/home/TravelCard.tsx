@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import Card from "../Card";
 import { Avatar, Button, Divider, Icon, Skeleton } from "@rneui/themed";
@@ -6,6 +6,8 @@ import { COLOR } from "../../constants/color";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView from "react-native-maps";
 import { Booking, BookingStatus } from "../../api";
+import MapViewDirections from "react-native-maps-directions";
+import { API_KEY } from "../../api/ggmap";
 type CardTravelProps = {
   title: string;
   data: Nullable<Booking>;
@@ -13,8 +15,8 @@ type CardTravelProps = {
 };
 type DriverProps = {
   avatar?: string;
-  name: string;
-  star: number;
+  fullName: string;
+  rating: number;
 };
 const statusMapping: Record<BookingStatus | "none", string> = {
   none: "Thuê tài xế?",
@@ -30,6 +32,9 @@ const CardTravel = (props: CardTravelProps) => {
   const { title, onPress, data } = props;
   const status = data?.status || "none";
   const footerTitle = statusMapping[status];
+  const nextLocation = data?.locations?.find(
+    (l) => l.id === data.nextLocationId,
+  );
   return (
     <Card style={styles.container}>
       <View style={styles.cardHeader}>
@@ -52,18 +57,9 @@ const CardTravel = (props: CardTravelProps) => {
           <CardBodyNone />
         ) : (
           <View style={{ gap: 10 }}>
-            <MiniMap />
+            <MiniMap booking={data} />
 
-            <DriverInfo
-              driverProps={
-                (data?.driver && {
-                  avatar: data.driver.avatar,
-                  name: data.driver.fullName,
-                  star: data.driver?.rating,
-                }) ||
-                undefined
-              }
-            />
+            <DriverInfo driverProps={data?.driver ?? undefined} />
           </View>
         )}
       </View>
@@ -75,18 +71,26 @@ const CardTravel = (props: CardTravelProps) => {
           />
           <TouchableOpacity onPress={onPress}>
             <View style={styles.footer}>
-              <Text
-                style={[
-                  styles.footerTitle,
-                  styles[
-                    status === "PENDING" || status === "ACCEPTED"
-                      ? "footerTitleWarn"
-                      : "footerTitleInfo"
-                  ],
-                ]}
-              >
-                {footerTitle}
-              </Text>
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={[
+                    styles.footerTitle,
+                    styles[
+                      status === "PENDING" || status === "ACCEPTED"
+                        ? "footerTitleWarn"
+                        : "footerTitleInfo"
+                    ],
+                  ]}
+                >
+                  {status !== "DRIVING" ? footerTitle : "Điểm đến tiếp theo"}
+                </Text>
+                <Text
+                  style={{ fontSize: 8, color: COLOR.secondary }}
+                  numberOfLines={1}
+                >
+                  {nextLocation ? nextLocation.address : null}
+                </Text>
+              </View>
               <Icon
                 color={COLOR.primary}
                 name={status === "none" ? "search" : "chevron-right"}
@@ -109,8 +113,22 @@ const CardBodyNone = () => (
     Hiện tại bạn chưa có chuyến đi nào!
   </Text>
 );
-const MiniMap = () => {
+const MiniMap = ({ booking }: { booking: Nullable<Booking> }) => {
+  const { locations } = booking ?? {};
   const mapRef = useRef<MapView>(null);
+  useEffect(() => {
+    if (mapRef.current && locations) {
+      mapRef.current.fitToCoordinates(locations, {
+        edgePadding: {
+          top: 35,
+          right: 35,
+          bottom: 35,
+          left: 35,
+        },
+        animated: true,
+      });
+    }
+  }, [locations]);
   return (
     <View style={styles.miniMap}>
       <MapView
@@ -120,18 +138,30 @@ const MiniMap = () => {
         rotateEnabled={false}
         pitchEnabled={false}
         camera={{
-          center: {
-            latitude: 21.007326,
-            longitude: 105.847328,
-          },
+          center: locations ? locations[0] : { latitude: 0, longitude: 0 },
           pitch: 0,
           heading: 0,
-          altitude: 0,
           zoom: 15,
         }}
         style={{ width: "100%", height: "120%" }}
         ref={mapRef}
-      ></MapView>
+      >
+        {locations && (
+          <MapViewDirections
+            apikey={API_KEY}
+            region="vn"
+            language="vi"
+            timePrecision="now"
+            origin={locations[0]}
+            destination={locations[locations.length - 1]}
+            strokeWidth={5}
+            strokeColor={COLOR.primary}
+            waypoints={locations.slice(1, locations.length - 1)}
+            geodesic
+            mode="DRIVING"
+          />
+        )}
+      </MapView>
     </View>
   );
 };
@@ -166,7 +196,7 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
           />
           <View style={{ justifyContent: "center" }}>
             <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-              {driverProps.name}
+              {driverProps.fullName}
             </Text>
             <View
               style={{ flexDirection: "row", gap: 5, alignItems: "baseline" }}
@@ -176,7 +206,7 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
                 type="feather"
                 size={16}
               />
-              <Text style={{ fontSize: 16 }}>{driverProps.star}</Text>
+              <Text style={{ fontSize: 16 }}>{driverProps.rating}</Text>
             </View>
           </View>
         </>
@@ -207,7 +237,7 @@ const styles = StyleSheet.create({
   },
   footerTitle: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 17,
     alignItems: "flex-end",
   },
   footerTitleInfo: {

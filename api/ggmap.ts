@@ -39,7 +39,8 @@ export const geoCode = async (address: string) => {
   const url = buildUrl(path, { address });
   const res = await instance.get<GeoCodeResultType>(url);
   const data = res.data;
-  return data.results?.[0].geometry.location;
+  const { lat, lng } = data.results?.[0].geometry.location;
+  return { latitude: lat, longitude: lng, address };
 };
 
 export const geoReverse = async (lat: number, lng: number) => {
@@ -47,7 +48,7 @@ export const geoReverse = async (lat: number, lng: number) => {
   const url = buildUrl(path, { latlng: `${lat},${lng}` });
   const res = await instance.get<GeoCodeResultType>(url);
   const data = res.data;
-  const results = data.results
+  const results = data.results;
   // .sort((a, b) => {
   //   return (
   //     b.geometry.location.lat +

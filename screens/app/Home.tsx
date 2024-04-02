@@ -1,5 +1,5 @@
 import { Button, Text } from "@rneui/themed";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { useRecentsBooking } from "../../api/hook";
@@ -8,11 +8,21 @@ import Card from "../../components/Card";
 import TravelCard from "../../components/home/TravelCard";
 import { COLOR } from "../../constants/color";
 import type { AppNavigationProp } from "../../types/navigation";
+import { bookingSocket } from "../../socket";
 interface HomeProps {
   navigation: AppNavigationProp;
 }
 const Home: FC<HomeProps> = ({ navigation }) => {
   const { data, refetch, status } = useRecentsBooking();
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", refetch);
+    return unsubscribe;
+  }, [navigation, refetch]);
+  useEffect(() => {
+    if (status !== "success") return;
+    const unsubscribe = bookingSocket.listenCurrentBooking(refetch);
+    return unsubscribe;
+  }, [refetch, status]);
   return (
     <AppWrapper>
       <View style={styles.container}>

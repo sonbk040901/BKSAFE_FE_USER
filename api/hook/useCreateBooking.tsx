@@ -1,11 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { bookingApi } from "../";
+import { Booking, bookingApi } from "../";
 
-function useCreateBooking() {
-  const { status, mutate } = useMutation({
+function useCreateBooking(initialData?: Booking) {
+  const {
+    status,
+    mutate,
+    data = initialData,
+  } = useMutation({
     mutationFn: bookingApi.create,
   });
-  return { status, createBooking: mutate };
+  return { createBookingStatus: status, createBooking: mutate, booking: data };
 }
 
 export default useCreateBooking;

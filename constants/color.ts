@@ -9,6 +9,8 @@ export const COLOR = {
   white: "#FFFFFF",
   errorBackground: "#FCEDED",
   primaryBackground: "#95c6ff67",
+  secondaryBackground: "#5b667398",
+  warningBackground: "#FF8A0033",
   appBackground: "#F4F6FA",
   secondary2: "#4C5980",
 } as const;

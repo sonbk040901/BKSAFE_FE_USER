@@ -4,19 +4,22 @@ import AppWrapper from "../../components/AppWrapper";
 import { AppNavigationProp } from "../../types/navigation";
 import { Button } from "@rneui/themed";
 import { authApi } from "../../api";
+import { useInitAppContext } from "../../hook/useInitApp";
 
 interface SettingProps {
   navigation: AppNavigationProp;
 }
 
 const Setting = ({ navigation }: SettingProps) => {
+  const { refetch } = useInitAppContext();
   return (
     <AppWrapper>
       <View style={styles.container}>
         <Text></Text>
         <Button
-          onPress={() => {
-            authApi.logout();
+          onPress={async () => {
+            await authApi.logout();
+            refetch();
             navigation.replace("Auth");
           }}
         >

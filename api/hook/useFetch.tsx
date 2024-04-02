@@ -27,6 +27,7 @@ function useFetch<D, RD extends D | undefined>(
   const [error, setError] = useState<ErrorResponse | null>(null);
   const status = data ? "success" : error ? "error" : "loading";
   const refetch = useCallback(() => {
+    setData(initialData || null);
     fetchFn()
       .then(setData)
       .catch((error) => {

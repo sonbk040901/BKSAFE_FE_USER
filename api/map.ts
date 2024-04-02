@@ -6,7 +6,7 @@ interface FindDriversDTO {
   latitude: number;
   longitude: number;
 }
-interface CalculateCostDTO {
+export interface CalculateCostDTO {
   distance: number;
   numberOfWaypoints: number;
 }

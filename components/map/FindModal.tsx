@@ -36,7 +36,7 @@ const FindAdress = ({
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       collapsable
       transparent
       statusBarTranslucent

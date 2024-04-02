@@ -6,7 +6,8 @@ interface LocationDTO {
   latitude: number;
   longitude: number;
 }
-interface BookingDTO {
+export interface BookingDTO {
+  distance: number;
   pickup: LocationDTO;
   dropOff: LocationDTO;
   stops: LocationDTO[];

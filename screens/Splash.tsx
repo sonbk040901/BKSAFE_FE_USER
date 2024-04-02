@@ -1,26 +1,26 @@
+import { Image } from "@rneui/themed";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
-import type { RootNavigationProp } from "../types/navigation";
 import { COLOR } from "../constants/color";
-import { LinearGradient } from "expo-linear-gradient";
-import { Image } from "@rneui/themed";
-import useInitApp from "../hook/useInitApp";
 import { IMAGE } from "../constants/image";
+import { useInitAppContext } from "../hook/useInitApp";
+import type { RootNavigationProp } from "../types/navigation";
 interface SplashProps {
   navigation: RootNavigationProp;
 }
 const Splash = ({ navigation }: SplashProps) => {
-  const [isLoading, isAuthenticated] = useInitApp();
+  const { isLoading, isAuthenticated, data } = useInitAppContext();
   useEffect(() => {
     if (isLoading) {
       return;
     }
-    if (isAuthenticated) {
-      navigation.replace("App");
+    if (isAuthenticated && data) {
+      navigation.replace("App", { userInfo: data });
       return;
     }
     navigation.replace("Auth");
-  }, [navigation, isLoading, isAuthenticated]);
+  }, [navigation, isLoading, isAuthenticated, data]);
   return (
     <LinearGradient
       colors={["#8abfff", "#ffffff", "#ffffff", "#429aff"]}

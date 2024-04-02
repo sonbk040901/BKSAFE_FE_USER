@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { mapApi } from "..";
 
-function useCalculateCost() {
+function useCalculateCost(initialValue?: number) {
   const {
-    data: money,
+    data: money = initialValue,
     mutate: calculate,
     ...rest
   } = useMutation({

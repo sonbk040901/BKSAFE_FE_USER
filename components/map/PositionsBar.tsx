@@ -1,3 +1,4 @@
+import { Divider, Icon } from "@rneui/themed";
 import React, { useState } from "react";
 import {
   StyleProp,
@@ -8,29 +9,18 @@ import {
   ViewStyle,
 } from "react-native";
 import { COLOR } from "../../constants/color";
+import { useMapContext } from "../../context/MapContext";
 import Card from "../Card";
-import { Divider, Icon } from "@rneui/themed";
 import FindAdress from "./FindModal";
 
 interface PostionsBarProps {
-  visible?: boolean;
   style?: StyleProp<ViewStyle>;
-  data?: string[];
-  editable?: boolean;
-  onChange?: (index: number, address: string) => void;
-  onAdd?: (address: string) => void;
-  onRemove?: (index: number) => void;
 }
 
-export default function PostionsBar({
-  visible = true,
-  style,
-  data = [],
-  editable = true,
-  onChange,
-  onAdd,
-  onRemove,
-}: PostionsBarProps) {
+export default function PostionsBar({ style }: PostionsBarProps) {
+  const { locations, addAddress, replaceLocation, removeLocation, viewOnly } =
+    useMapContext();
+  const data = locations.map((l) => l.address);
   const [modifyIndex, setModifyIndex] = useState<number | null>();
   const modalVisible = modifyIndex !== undefined;
   const modalValue =
@@ -39,10 +29,10 @@ export default function PostionsBar({
       : undefined;
 
   const handleSelect = (_: unknown, v: number) => {
-    if (!editable) return;
+    if (viewOnly) return;
     setModifyIndex(v);
   };
-  if (!visible) return null;
+  if (data.length === 0) return null;
   return (
     <Card
       radius={10}
@@ -58,8 +48,8 @@ export default function PostionsBar({
             return;
           }
           setModifyIndex(undefined);
-          if (modifyIndex !== null) onChange?.(modifyIndex, v);
-          else onAdd?.(v);
+          if (modifyIndex !== null) replaceLocation(modifyIndex, v);
+          else addAddress(v);
         }}
         onRequestClose={() => setModifyIndex(undefined)}
       />
@@ -84,8 +74,8 @@ export default function PostionsBar({
                 value={i / 2}
                 icon={<Triangle />}
                 endIcon={
-                  editable && (
-                    <TouchableOpacity onPress={() => onRemove?.(i / 2)}>
+                  !viewOnly && (
+                    <TouchableOpacity onPress={() => removeLocation(i / 2)}>
                       <Icon
                         name="cancel"
                         size={20}
@@ -107,7 +97,7 @@ export default function PostionsBar({
           backgroundColor: "white",
           borderRadius: 999,
           padding: 1,
-          display: editable ? "flex" : "none",
+          display: viewOnly ? "none" : "flex",
         }}
         onPress={() => setModifyIndex(null)}
       >

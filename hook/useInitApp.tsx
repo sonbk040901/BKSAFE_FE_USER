@@ -2,12 +2,13 @@ import {
   PermissionStatus,
   requestForegroundPermissionsAsync,
 } from "expo-location";
-import { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import useProfile from "../api/hook/useProfile";
+import { Account } from "../api";
 type AuthStatus = "undetermined" | "authenticated" | "unauthenticated";
 
-export default () => {
-  const { status } = useProfile();
+export default function useInitApp() {
+  const { status, data, refetch } = useProfile();
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
     PermissionStatus.UNDETERMINED,
   );
@@ -30,5 +31,29 @@ export default () => {
     };
     init();
   }, []);
-  return [isLoading, isAuthenticated] as const;
+  return { isLoading, isAuthenticated, data, refetch };
+}
+
+type InitAppStates = {
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  data: Account | null;
+  refetch: () => void;
 };
+const InitAppContext = createContext<InitAppStates>({
+  isLoading: true,
+  isAuthenticated: false,
+  data: null,
+  refetch: () => {},
+});
+export const InitAppProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const value = useInitApp();
+  return (
+    <InitAppContext.Provider value={value}>{children}</InitAppContext.Provider>
+  );
+};
+export const useInitAppContext = () => React.useContext(InitAppContext);

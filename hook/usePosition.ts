@@ -10,16 +10,7 @@ const usePosition = (initValue: InitialPositions = []) => {
   const [positions, setPositions] = useState(initValue);
   const addAddress = useCallback(async (address: string) => {
     const location = await geoCode(address);
-    if (location) {
-      setPositions((prev) => [
-        ...prev,
-        {
-          latitude: location.lat,
-          longitude: location.lng,
-          address,
-        },
-      ]);
-    }
+    if (location) setPositions((prev) => [...prev, location]);
   }, []);
   const addLocation = useCallback(
     async (location: Omit<LocationType, "address">) => {
@@ -31,26 +22,15 @@ const usePosition = (initValue: InitialPositions = []) => {
     },
     [],
   );
-  const remove = useCallback((value: number) => {
-    // const index =
-    //   typeof value === "number"
-    //     ? value
-    //     : typeof value === "string"
-    //     ? positions.findIndex((item) => item.address === value)
-    //     : positions.findIndex((item) => item.location === value);
-    // if (index === -1) return;
-    const index = value;
+  const remove = useCallback((index: number) => {
     setPositions((prev) => prev.filter((_, i) => i !== index));
   }, []);
   const replace = useCallback(async (index: number, address: string) => {
     const location = await geoCode(address);
     setPositions((prev) => {
-      prev[index] = {
-        latitude: location.lat,
-        longitude: location.lng,
-        address,
-      };
-      return [...prev];
+      const positions = [...prev];
+      positions[index] = location;
+      return positions;
     });
   }, []);
   return { positions, addAddress, addLocation, remove, replace };

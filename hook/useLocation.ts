@@ -17,23 +17,12 @@ type LocationType = {
 };
 const LOCATION_TASK_NAME = "background-location-task";
 // Bật GPS (tính năng lấy vị trí thiết bị mỗi giây) để lấy đc vị trí hiện tại, sau đó tắt GPS
-export default function useLocation(disable: boolean = false) {
+export default function useLocation(initValue?: LocationType) {
   // const [status, setStatus] = useState<StatusType>("loading"); nếu dùng cách này thì nhược điểm là sẽ phải setStatus 2 lần
-  const [location, setLocation] = useState<LocationType>();
+  const [location, setLocation] = useState<LocationType | undefined>(initValue);
   useEffect(() => {
-    if (disable) return;
+    if (location) return;
     async function request() {
-      await enableNetworkProviderAsync();
-      await startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-        accuracy: LocationAccuracy.BestForNavigation,
-        timeInterval: 1000,
-        distanceInterval: 0,
-        foregroundService: {
-          notificationTitle: "Using your location",
-          notificationBody:
-            "To turn off, go back to the app and switch something off.",
-        },
-      });
       defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
         const { locations } = data as {
           locations: { coords: { latitude: number; longitude: number } }[];
@@ -46,19 +35,28 @@ export default function useLocation(disable: boolean = false) {
         setLocation(locations[0].coords);
         // setStatus("granted");
       });
-    }
-    request();
-    return () => {
-      unregisterAllTasksAsync();
-    };
-  }, [disable]);
-  useEffect(() => {
-    if (disable) return;
-    if (location && isTaskDefined(LOCATION_TASK_NAME)) {
-      stopLocationUpdatesAsync(LOCATION_TASK_NAME).then(() => {
-        unregisterAllTasksAsync();
+      await enableNetworkProviderAsync();
+      await startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        accuracy: LocationAccuracy.BestForNavigation,
+        timeInterval: 1000,
+        distanceInterval: 0,
+        foregroundService: {
+          notificationTitle: "Using your location",
+          notificationBody:
+            "To turn off, go back to the app and switch something off.",
+        },
       });
     }
-  }, [disable, location]);
+    request();
+  }, [location]);
+  useEffect(() => {
+    if (location && isTaskDefined(LOCATION_TASK_NAME)) {
+      stopLocationUpdatesAsync(LOCATION_TASK_NAME)
+        .then(() => {
+          unregisterAllTasksAsync();
+        })
+        .catch(() => {});
+    }
+  }, [location]);
   return location;
 }
