@@ -1,17 +1,25 @@
 import { Button, Dialog } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
 import { API_KEY } from "../api/ggmap";
+import useFindDriver from "../api/hook/useFindDriver";
 import Footer from "../components/map/Footer";
 import PostionsBar from "../components/map/PositionsBar";
 import { COLOR } from "../constants/color";
 import { IMAGE } from "../constants/image";
-import { MapProvider, useMapContext } from "../context/MapContext";
+import useLocation from "../hook/useLocation";
 import useOpacityStyle from "../hook/useOpacityStyle";
+import { useAppDispatch, useAppSelector } from "../states";
+import {
+  addLocation,
+  calculatePrice,
+  selectBooking,
+  setDistance,
+} from "../states/slice/booking";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
 
 interface MapProps {
@@ -20,36 +28,39 @@ interface MapProps {
 }
 
 const Map = ({ navigation }: MapProps) => {
-  const {
-    driverOnMaps,
-    locations,
-    currentLocation,
-    // setNote,
-    // setNotes,
-    setDistance,
-    viewOnly,
-  } = useMapContext();
+  const { locations, id, distance } = useAppSelector(selectBooking);
+  const dispatch = useAppDispatch();
+  const { drivers } = useFindDriver({
+    location: locations[0],
+    autoFetch: !id,
+  });
+  const currentLocation = useLocation(locations[0]);
   const [opacityStyle, setShowContent] = useOpacityStyle();
-  const mapRef = React.useRef<MapView>(null);
+  const mapRef = useRef<MapView>(null);
   // // hide all content when drag map
   const handlePanDrag = () => setShowContent(false);
   const handlePanDragEnd = () => setShowContent(true);
   useEffect(() => {
-    if (!currentLocation) return;
-    mapRef.current?.animateCamera(
-      {
-        center: currentLocation,
-        pitch: 0,
-        heading: 0,
-        altitude: 0,
-        zoom: 15,
-      },
-      { duration: 1500 },
-    );
-  }, [currentLocation]);
+    if (!currentLocation || locations.length) return;
+    dispatch(addLocation(currentLocation));
+  }, [currentLocation, dispatch, locations.length]);
   useEffect(() => {
-    if (locations.length < 2) return;
-    setTimeout(() => {
+    if (locations.length === 0) return;
+    const sto = setTimeout(() => {
+      if (locations.length === 1) {
+        dispatch(setDistance(0));
+        mapRef.current?.animateCamera(
+          {
+            center: locations[0],
+            pitch: 0,
+            heading: 0,
+            altitude: 0,
+            zoom: 15,
+          },
+          { duration: 1500 },
+        );
+        return;
+      }
       mapRef.current?.fitToCoordinates(locations, {
         edgePadding: {
           top: 150 + 20 * locations.length,
@@ -60,7 +71,12 @@ const Map = ({ navigation }: MapProps) => {
         animated: true,
       });
     }, 300);
-  }, [locations]);
+    return () => clearTimeout(sto);
+  }, [dispatch, locations]);
+  useEffect(() => {
+    dispatch(calculatePrice());
+  }, [dispatch, distance]);
+  const dialogVisible = !id && locations.length === 0;
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -71,7 +87,7 @@ const Map = ({ navigation }: MapProps) => {
       <StatusBar style="dark" />
       <Dialog
         statusBarTranslucent
-        isVisible={!viewOnly && !locations.length}
+        isVisible={dialogVisible}
         onRequestClose={() => navigation.goBack()}
       >
         <Dialog.Title
@@ -125,7 +141,7 @@ const Map = ({ navigation }: MapProps) => {
             waypoints={locations.slice(1, locations.length - 1)}
             geodesic
             mode="DRIVING"
-            onReady={({ distance }) => setDistance(distance)}
+            onReady={({ distance }) => dispatch(setDistance(distance))}
           />
         )}
         {locations.map((p, i) => {
@@ -156,7 +172,7 @@ const Map = ({ navigation }: MapProps) => {
             </Marker>
           );
         })}
-        {driverOnMaps?.map((d) => (
+        {drivers.map((d) => (
           <Marker
             key={d.id}
             coordinate={d}
@@ -169,13 +185,7 @@ const Map = ({ navigation }: MapProps) => {
   );
 };
 
-export default function MapWrapper(props: MapProps) {
-  return (
-    <MapProvider booking={props.route.params.data}>
-      <Map {...props} />
-    </MapProvider>
-  );
-}
+export default Map;
 
 const styles = StyleSheet.create({
   container: {

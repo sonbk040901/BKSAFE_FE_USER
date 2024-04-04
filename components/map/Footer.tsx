@@ -4,20 +4,28 @@ import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { COLOR } from "../../constants/color";
 import { style } from "../../constants/theme";
-import { useMapContext } from "../../context/MapContext";
+import { useAppDispatch, useAppSelector } from "../../states";
+import {
+  cancelBooking,
+  createBooking,
+  selectBooking,
+} from "../../states/slice/booking";
 
 interface FooterProps extends ComponentProps<typeof Animated.View> {
   onCancel?: () => void;
 }
 
 function Footer(props: FooterProps) {
-  const { status, price, createBooking, cancelBooking } = useMapContext();
+  // const { status, price, createBooking, cancelBooking } = useMapContext();
+  const { status, price, id } = useAppSelector(selectBooking);
+  const dispatch = useAppDispatch();
   const { style: customStyle, onCancel } = props;
   const isVisible = !status || status === "PENDING";
   if (!isVisible) return null;
   const disable = !price || status === "PENDING";
   const handleCreateBooking = () => {
-    cancelBooking();
+    if (!id) return;
+    dispatch(cancelBooking(id));
     onCancel?.();
   };
   return (
@@ -116,7 +124,7 @@ function Footer(props: FooterProps) {
           disabledStyle={styles.disable}
           disabledTitleStyle={{ color: "white" }}
           disabled={disable}
-          onPress={createBooking}
+          onPress={() => dispatch(createBooking())}
           titleStyle={{ fontSize: 16, paddingVertical: 3 }}
           icon={
             price !== undefined && {
@@ -128,38 +136,32 @@ function Footer(props: FooterProps) {
           }
           iconRight
         >
-          {price ? (
-            <View
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingLeft: 10,
+              paddingVertical: 3,
+            }}
+          >
+            <Text
               style={{
+                color: "white",
                 flex: 1,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingLeft: 10,
-                paddingVertical: 3,
+                fontSize: 16,
+                fontWeight: "bold",
               }}
+              numberOfLines={1}
             >
-              <Text
-                style={{
-                  color: "white",
-                  flex: 1,
-                  fontSize: 16,
-                  fontWeight: "bold",
-                }}
-                numberOfLines={1}
-              >
-                {status === "PENDING"
-                  ? "Đang tìm tài xế "
-                  : "Tìm tài xế lái xe hơi"}
-              </Text>
-              <Text
-                style={{ color: "white", fontSize: 16, fontWeight: "bold" }}
-              >
-                {price ? `${price.toLocaleString()}đ` : ""}
-              </Text>
-            </View>
-          ) : (
-            "Tìm tài xế lái xe hơi"
-          )}
+              {status === "PENDING"
+                ? "Đang tìm tài xế "
+                : "Tìm tài xế lái xe hơi"}
+            </Text>
+            <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
+              {price ? `${price.toLocaleString()}đ` : ""}
+            </Text>
+          </View>
         </Button>
       </View>
     </Animated.View>

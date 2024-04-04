@@ -18,15 +18,15 @@ const Login = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const emailRef = useRef<PropsWithChildren<TextInput>>(null);
   const { setEmail, setPassword, submit, status } = useLogin();
-  const { data, refetch } = useInitAppContext();
+  const { data, refetch, isAuthenticated } = useInitAppContext();
   useEffect(() => {
     if (status === "success") refetch();
   }, [refetch, status]);
   useEffect(() => {
-    if (data) {
+    if (isAuthenticated && data) {
       navigation.replace("App", { userInfo: data });
     }
-  }, [data, navigation]);
+  }, [data, isAuthenticated, navigation]);
   useEffect(() => {
     const sto = setTimeout(() => {
       emailRef.current?.focus();

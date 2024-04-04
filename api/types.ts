@@ -57,8 +57,8 @@ export type BookingStatus =
   | "DRIVING"
   | "COMPLETED";
 export interface Booking {
-  locations?: Location[];
-  notes?: Note[];
+  locations: Location[];
+  notes: Note[];
   price: number;
   userId: number;
   note: string;

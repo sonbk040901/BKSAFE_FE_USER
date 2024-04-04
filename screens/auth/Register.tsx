@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import type{ AuthNavigationProp } from '../../types/navigation';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import * as React from "react";
+import { Text, View, StyleSheet } from "react-native";
+import type { AuthNavigationProp } from "../../types/navigation";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
-interface RegisterProps {}
-
-const Register = (props: RegisterProps) => {
+const Register = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   useFocusEffect(() => {
+    // eslint-disable-next-line no-console
     console.log(navigation.getState());
   });
   return (
@@ -20,5 +19,5 @@ const Register = (props: RegisterProps) => {
 export default Register;
 
 const styles = StyleSheet.create({
-  container: {}
+  container: {},
 });

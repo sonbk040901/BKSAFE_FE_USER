@@ -9,11 +9,15 @@ import TravelCard from "../../components/home/TravelCard";
 import { COLOR } from "../../constants/color";
 import type { AppNavigationProp } from "../../types/navigation";
 import { bookingSocket } from "../../socket";
+import { useAppDispatch } from "../../states";
+import { patchBooking } from "../../states/slice/booking";
+import { Booking } from "../../api";
 interface HomeProps {
   navigation: AppNavigationProp;
 }
 const Home: FC<HomeProps> = ({ navigation }) => {
   const { data, refetch, status } = useRecentsBooking();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", refetch);
     return unsubscribe;
@@ -23,6 +27,11 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     const unsubscribe = bookingSocket.listenCurrentBooking(refetch);
     return unsubscribe;
   }, [refetch, status]);
+  const handleSelectBooking = (data?: Nullable<Booking>) => () => {
+    const booking = data ?? undefined;
+    dispatch(patchBooking(booking));
+    navigation.push("Map");
+  };
   return (
     <AppWrapper>
       <View style={styles.container}>
@@ -41,9 +50,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
               }
               radius="md"
               buttonStyle={{ backgroundColor: COLOR.primary }}
-              onPress={() => {
-                navigation.push("Map", { data: data?.current ?? null });
-              }}
+              onPress={handleSelectBooking(data?.current)}
               icon={{
                 name: "chevron-right",
                 size: 20,
@@ -74,17 +81,13 @@ const Home: FC<HomeProps> = ({ navigation }) => {
               <TravelCard
                 title="Chuyến đi hiện tại"
                 data={data.current}
-                onPress={() => navigation.push("Map", { data: data.current })}
+                onPress={handleSelectBooking(data.current)}
               />
               {data.recent && (
                 <TravelCard
                   title="Chuyến đi trước"
                   data={data.recent}
-                  onPress={() =>
-                    navigation.push("Map", {
-                      data: data.recent,
-                    })
-                  }
+                  onPress={handleSelectBooking(data.recent)}
                 />
               )}
             </View>

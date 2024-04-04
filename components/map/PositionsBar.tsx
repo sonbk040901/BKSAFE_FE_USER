@@ -9,17 +9,26 @@ import {
   ViewStyle,
 } from "react-native";
 import { COLOR } from "../../constants/color";
-import { useMapContext } from "../../context/MapContext";
+import { useAppDispatch, useAppSelector } from "../../states";
+import {
+  addAdress,
+  removeLocation,
+  replaceLocation,
+  selectBooking,
+} from "../../states/slice/booking";
 import Card from "../Card";
-import FindAdress from "./FindModal";
+import AddressAutocomplete from "./AddressAutocomplete";
 
 interface PostionsBarProps {
   style?: StyleProp<ViewStyle>;
 }
 
 export default function PostionsBar({ style }: PostionsBarProps) {
-  const { locations, addAddress, replaceLocation, removeLocation, viewOnly } =
-    useMapContext();
+  // const { locations, addAddress, replaceLocation, removeLocation, viewOnly } =
+  //   useMapContext();
+  const { locations, id } = useAppSelector(selectBooking);
+  const dispatch = useAppDispatch();
+  const viewOnly = Boolean(id);
   const data = locations.map((l) => l.address);
   const [modifyIndex, setModifyIndex] = useState<number | null>();
   const modalVisible = modifyIndex !== undefined;
@@ -32,6 +41,17 @@ export default function PostionsBar({ style }: PostionsBarProps) {
     if (viewOnly) return;
     setModifyIndex(v);
   };
+  const handleChangeText = (address: string) => {
+    if (modifyIndex === undefined) {
+      return;
+    }
+    setModifyIndex(undefined);
+    if (modifyIndex !== null) {
+      dispatch(replaceLocation({ address, index: modifyIndex }));
+      return;
+    }
+    dispatch(addAdress(address));
+  };
   if (data.length === 0) return null;
   return (
     <Card
@@ -39,18 +59,11 @@ export default function PostionsBar({ style }: PostionsBarProps) {
       shadow={false}
       style={[styles.container, style]}
     >
-      <FindAdress
+      <AddressAutocomplete
         key={modifyIndex}
         visible={modalVisible}
         value={modalValue}
-        onChangeText={(v) => {
-          if (modifyIndex === undefined) {
-            return;
-          }
-          setModifyIndex(undefined);
-          if (modifyIndex !== null) replaceLocation(modifyIndex, v);
-          else addAddress(v);
-        }}
+        onChangeText={handleChangeText}
         onRequestClose={() => setModifyIndex(undefined)}
       />
       {Array(data.length * 2 - 1)
@@ -75,11 +88,13 @@ export default function PostionsBar({ style }: PostionsBarProps) {
                 icon={<Triangle />}
                 endIcon={
                   !viewOnly && (
-                    <TouchableOpacity onPress={() => removeLocation(i / 2)}>
+                    <TouchableOpacity
+                      onPress={() => dispatch(removeLocation(i / 2))}
+                    >
                       <Icon
                         name="cancel"
                         size={20}
-                        color="gray"
+                        color={COLOR.secondary}
                       />
                     </TouchableOpacity>
                   )
@@ -92,20 +107,26 @@ export default function PostionsBar({ style }: PostionsBarProps) {
       <TouchableOpacity
         style={{
           position: "absolute",
-          right: 5,
-          bottom: -40,
+          left: 0,
+          bottom: -43,
           backgroundColor: "white",
           borderRadius: 999,
-          padding: 1,
+          borderWidth: 0.5,
+          borderColor: "#e0e0e0",
+          padding: 1.5,
+          paddingRight: 6,
           display: viewOnly ? "none" : "flex",
+          flexDirection: "row",
+          alignItems: "center",
         }}
         onPress={() => setModifyIndex(null)}
       >
         <Icon
           name="add-circle"
           size={30}
-          color="gray"
+          color={COLOR.secondary}
         />
+        <Text style={{ fontWeight: "400", color: COLOR.secondary }}>Thêm điểm đến</Text>
       </TouchableOpacity>
     </Card>
   );

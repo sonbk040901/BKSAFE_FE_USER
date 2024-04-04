@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { ErrorResponse } from "../types";
 import { useNavigation } from "@react-navigation/native";
-import { RootNavigationProp } from "../../types/navigation";
 import { AxiosError } from "axios";
+import { useCallback, useEffect, useReducer } from "react";
+import { RootNavigationProp } from "../../types/navigation";
 import { showAlert } from "../../utils/alert";
+import { ErrorResponse } from "../types";
 
-type FetchStatus = "loading" | "success" | "error";
+type FetchStatus = "idle" | "loading" | "success" | "error";
 type UseFetchOptions<D, RD> = {
   fetchFn: () => Promise<D>;
   initialData?: RD;
@@ -17,19 +17,36 @@ type UseFetchReturn<D, RD> = {
   error: ErrorResponse | null;
   refetch: () => void;
 };
+const reducer = (
+  state: object,
+  action: { type: FetchStatus; data?: unknown; error?: unknown },
+) => {
+  switch (action.type) {
+    case "loading":
+      return { ...state, status: "loading" };
+    case "success":
+      return { ...state, status: "success", data: action.data };
+    case "error":
+      return { ...state, status: "error", error: action.error };
+    default:
+      return state;
+  }
+};
 function useFetch<D, RD extends D | undefined>(
   opts: UseFetchOptions<D, RD>,
   deps: readonly unknown[] = [],
 ) {
   const { fetchFn, initialData, autoFetch = true } = opts;
   const navigation = useNavigation<RootNavigationProp>();
-  const [data, setData] = useState<D | null>(initialData || null);
-  const [error, setError] = useState<ErrorResponse | null>(null);
-  const status = data ? "success" : error ? "error" : "loading";
+  const [state, dispatch] = useReducer(reducer, {
+    status: "idle",
+    data: initialData || null,
+    error: null,
+  });
   const refetch = useCallback(() => {
-    setData(initialData || null);
+    dispatch({ type: "loading" });
     fetchFn()
-      .then(setData)
+      .then((data) => dispatch({ type: "success", data }))
       .catch((error) => {
         const err = error as AxiosError<ErrorResponse, ErrorResponse>;
         const res = err.response!.data;
@@ -37,7 +54,7 @@ function useFetch<D, RD extends D | undefined>(
           showAlert("Phiên đăng nhập hết hạn", "Vui lòng đăng nhập lại");
           navigation.navigate("Auth");
         } else {
-          setError(res);
+          dispatch({ type: "error", error: res });
         }
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,7 +62,7 @@ function useFetch<D, RD extends D | undefined>(
   useEffect(() => {
     if (autoFetch) refetch();
   }, [autoFetch, refetch]);
-  return { data, status, error, refetch } as UseFetchReturn<D, RD>;
+  return { ...state, refetch } as UseFetchReturn<D, RD>;
 }
 
 export default useFetch;

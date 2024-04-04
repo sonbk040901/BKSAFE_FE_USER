@@ -18,7 +18,7 @@ interface FindAddressModalPropsType extends ComponentProps<typeof Modal> {
   onChangeText: (v: string) => void;
   onRequestClose?: () => void;
 }
-const FindAdress = ({
+const AddressAutocomplete = ({
   placeholder,
   value = "",
   onChangeText,
@@ -128,7 +128,7 @@ const Header = ({
     </>
   );
 };
-export default FindAdress;
+export default AddressAutocomplete;
 
 const styles = StyleSheet.create({
   container: {

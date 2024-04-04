@@ -42,16 +42,31 @@ const AppHeader: FC<DrawerHeaderProps> = ({ navigation, route }) => {
             color="white"
           />
         </TouchableOpacity>
-        {/* <Button
-          radius="sm"
-          buttonStyle={{ backgroundColor: "transparent" }}
-          icon={{
-            name: "menu",
-            size: 35,
-            color: "white",
-            type: "feather",
+      </View>
+
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <TouchableOpacity
+          style={{ padding: 15 }}
+          onPress={() => {
+            navigation.toggleDrawer();
           }}
-        /> */}
+        >
+          <Icon
+            name="bell"
+            type="feather"
+            size={25}
+            color="white"
+          />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

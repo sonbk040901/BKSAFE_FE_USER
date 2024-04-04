@@ -84,12 +84,14 @@ const CardTravel = (props: CardTravelProps) => {
                 >
                   {status !== "DRIVING" ? footerTitle : "Điểm đến tiếp theo"}
                 </Text>
-                <Text
-                  style={{ fontSize: 8, color: COLOR.secondary }}
-                  numberOfLines={1}
-                >
-                  {nextLocation ? nextLocation.address : null}
-                </Text>
+                {nextLocation && (
+                  <Text
+                    style={{ fontSize: 8, color: COLOR.secondary }}
+                    numberOfLines={1}
+                  >
+                    {nextLocation.address}
+                  </Text>
+                )}
               </View>
               <Icon
                 color={COLOR.primary}

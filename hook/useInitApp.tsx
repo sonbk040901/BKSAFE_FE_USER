@@ -4,11 +4,11 @@ import {
 } from "expo-location";
 import React, { createContext, useEffect, useState } from "react";
 import useProfile from "../api/hook/useProfile";
-import { Account } from "../api";
+import { Account, ErrorResponse } from "../api";
 type AuthStatus = "undetermined" | "authenticated" | "unauthenticated";
 
 export default function useInitApp() {
-  const { status, data, refetch } = useProfile();
+  const { status, data, refetch, error } = useProfile();
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
     PermissionStatus.UNDETERMINED,
   );
@@ -31,19 +31,21 @@ export default function useInitApp() {
     };
     init();
   }, []);
-  return { isLoading, isAuthenticated, data, refetch };
+  return { isLoading, isAuthenticated, data, refetch, error };
 }
 
 type InitAppStates = {
   isLoading: boolean;
   isAuthenticated: boolean;
   data: Account | null;
+  error: ErrorResponse | null;
   refetch: () => void;
 };
 const InitAppContext = createContext<InitAppStates>({
   isLoading: true,
   isAuthenticated: false,
   data: null,
+  error: null,
   refetch: () => {},
 });
 export const InitAppProvider = ({
