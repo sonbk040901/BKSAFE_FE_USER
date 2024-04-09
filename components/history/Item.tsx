@@ -3,19 +3,14 @@ import dayjs from "dayjs";
 import React, { useCallback, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
+import { BookingStatus } from "../../api";
 import { COLOR } from "../../constants/color";
 // import { AppNavigationProp } from "../../types/navigation";
 
 export interface ItemProps {
   id: string | number;
   // type?: "done" | "userCancel" | "adminCancel";
-  status:
-    | "pending"
-    | "accepted"
-    | "driving"
-    | "completed"
-    | "canceled"
-    | "rejected";
+  status: BookingStatus;
   createdAt: string | Date;
   price: number;
   onPress?: () => void;
@@ -70,9 +65,9 @@ const Item = (props: ItemProps) => {
             <View
               style={[
                 styles.type,
-                status === "rejected"
+                status === "REJECTED"
                   ? styles.redType
-                  : status === "canceled"
+                  : status === "CANCELLED"
                   ? styles.warnType
                   : undefined,
               ]}

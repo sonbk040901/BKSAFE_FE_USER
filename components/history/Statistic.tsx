@@ -50,8 +50,8 @@ const Statistic = (props: StatisticProps) => {
             name="car"
             type="font-awesome-5"
           />
-          <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-            {totalTravle}
+          <Text style={{ fontSize: 20, fontWeight: "500", color: COLOR.secondary2 }}>
+            {totalTravle} chuyến đi
           </Text>
         </View>
       </View>

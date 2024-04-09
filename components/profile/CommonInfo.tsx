@@ -4,21 +4,21 @@ import { StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { COLOR } from "../../constants/color";
 import Card from "../Card";
+import { useAppSelector } from "../../states";
+import { selectProfile } from "../../states/slice/profile";
 
-interface CommonInfoProps {}
-
-const CommonInfo = (props: CommonInfoProps) => {
-  const {} = props;
+const CommonInfo = () => {
+  const { avatar, fullName, email } = useAppSelector(selectProfile);
   return (
     <Card style={styles.container}>
       <Avatar
         size={50}
-        source={require("../../assets/images/avatar.png")}
+        source={avatar ?? require("../../assets/images/avatar.png")}
         avatarStyle={styles.avatar}
       />
       <View style={styles.info}>
-        <Text style={styles.name}>Lê Đức Sơn</Text>
-        <Text style={styles.email}>leducson007@gmail.com</Text>
+        <Text style={styles.name}>{fullName}</Text>
+        <Text style={styles.email}>{email}</Text>
       </View>
       <RectButton
         style={styles.button}

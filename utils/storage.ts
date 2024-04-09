@@ -1,14 +1,15 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setItemAsync, getItemAsync, deleteItemAsync } from "expo-secure-store";
 export const storeData = async (key: string, value: unknown) => {
   try {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
+    await setItemAsync(key, JSON.stringify(value));
   } catch (error) {
     throw "Error while storing data";
   }
 };
+
 export const getData = async (key: string) => {
   try {
-    const value = await AsyncStorage.getItem(key);
+    const value = await getItemAsync(key);
     return value ? JSON.parse(value) : null;
   } catch (error) {
     throw "Error while getting data";
@@ -16,7 +17,7 @@ export const getData = async (key: string) => {
 };
 export const removeData = async (key: string) => {
   try {
-    await AsyncStorage.removeItem(key);
+    await deleteItemAsync(key);
   } catch (error) {
     throw "Error while removing data";
   }
@@ -24,7 +25,6 @@ export const removeData = async (key: string) => {
 
 export const clearData = async () => {
   try {
-    await AsyncStorage.clear();
   } catch (error) {
     throw "Error while clearing data";
   }

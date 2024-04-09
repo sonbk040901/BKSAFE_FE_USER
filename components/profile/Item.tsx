@@ -1,5 +1,5 @@
 import { Icon, IconProps } from "@rneui/themed";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { COLOR } from "../../constants/color";
@@ -13,9 +13,6 @@ const Item = ({ icon, name, content }: ItemProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isChange, setIsChange] = useState(true);
   const inputRef = useRef<TextInput>(null);
-  useEffect(() => {
-    inputRef.current?.[isChange ? "focus" : "blur"]();
-  }, [isChange]);
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
@@ -35,19 +32,6 @@ const Item = ({ icon, name, content }: ItemProps) => {
             {content}
           </TextInput>
         </View>
-        {/* <Icon
-          name={isChange ? "edit-3" : "edit-2"}
-          size={25}
-          type="feather"
-          style={{
-            paddingHorizontal: 5,
-            paddingVertical: 2,
-          }}
-          containerStyle={{
-            borderRadius: 5,
-          }}
-          onPress={() => setIsChange(!isChange)}
-        /> */}
       </View>
     </View>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import Item, { ItemProps } from "./Item";
 import { RefreshControl } from "react-native-gesture-handler";
+import Item, { ItemProps } from "./Item";
 
 interface ItemsProps {
   data: ItemProps[];

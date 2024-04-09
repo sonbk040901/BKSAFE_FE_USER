@@ -14,7 +14,7 @@ export interface BookingDTO {
   note?: string;
   notes?: number[];
 }
-interface FindAllBookingDTO extends PagingAndSortDto {
+export interface FindAllBookingDTO extends PagingAndSortDto {
   status?: BookingStatus;
 }
 

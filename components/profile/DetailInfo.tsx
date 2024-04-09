@@ -1,27 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Card from "../Card";
 import Item from "./Item";
+import { useAppDispatch, useAppSelector } from "../../states";
+import { getProfile, selectProfile } from "../../states/slice/profile";
+import { useNavigation } from "@react-navigation/native";
 // import { RectButton } from "react-native-gesture-handler";
 // import { Button } from "@rneui/themed";
 
-interface DetailInfoProps {}
-
-const DetailInfo = (props: DetailInfoProps) => {
-  const {} = props;
+const DetailInfo = () => {
+  const { fullName, email, phone } = useAppSelector(selectProfile);
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      dispatch(getProfile());
+    });
+    return unsubscribe;
+  }, [dispatch, navigation]);
   return (
     <Card style={styles.container}>
       <Item
         name="user"
-        content="Lê Đức Sơn"
+        content={fullName}
       />
       <Item
         name="mail"
-        content="leducson007@gmail.com"
+        content={email}
       />
       <Item
         name="phone"
-        content="0353763088"
+        content={phone}
       />
       <Item
         name="map-pin"

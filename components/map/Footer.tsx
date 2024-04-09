@@ -3,7 +3,7 @@ import React, { ComponentProps } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { COLOR } from "../../constants/color";
-import { style } from "../../constants/theme";
+import { STYLE } from "../../constants/theme";
 import { useAppDispatch, useAppSelector } from "../../states";
 import {
   cancelBooking,
@@ -31,7 +31,7 @@ function Footer(props: FooterProps) {
   return (
     <Animated.View
       {...props}
-      style={[customStyle, styles.container, style.shadow]}
+      style={[customStyle, styles.container, STYLE.shadow]}
     >
       <Button
         buttonStyle={{

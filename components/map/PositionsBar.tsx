@@ -114,7 +114,7 @@ export default function PostionsBar({ style }: PostionsBarProps) {
           borderWidth: 0.5,
           borderColor: "#e0e0e0",
           padding: 1.5,
-          paddingRight: 6,
+          paddingRight: 7,
           display: viewOnly ? "none" : "flex",
           flexDirection: "row",
           alignItems: "center",

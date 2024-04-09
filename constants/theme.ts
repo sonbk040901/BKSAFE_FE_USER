@@ -27,7 +27,7 @@ export const theme = createTheme({
     },
   },
 });
-export const style = StyleSheet.create({
+export const STYLE = StyleSheet.create({
   shadow: {
     shadowColor: "#575757",
     shadowOffset: {
