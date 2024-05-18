@@ -21,8 +21,7 @@ function Footer(props: FooterProps) {
   const dispatch = useAppDispatch();
   const { style: customStyle, onCancel } = props;
   const isVisible = !status || status === "PENDING";
-  if (!isVisible) return null;
-  const disable = !price || status === "PENDING";
+  const disable = !!(!price || status);
   const handleCreateBooking = () => {
     if (!id) return;
     dispatch(cancelBooking(id));
@@ -95,7 +94,7 @@ function Footer(props: FooterProps) {
       </View>
 
       <View style={{ width: "90%", flexDirection: "row", gap: 10 }}>
-        {status && (
+        {status && isVisible && (
           <Button
             containerStyle={{ borderRadius: 20 }}
             buttonStyle={{ backgroundColor: COLOR.warningBackground }}

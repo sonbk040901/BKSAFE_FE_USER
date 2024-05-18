@@ -21,7 +21,8 @@ type DriverProps = {
 const statusMapping: Record<BookingStatus | "none", string> = {
   none: "Thuê tài xế?",
   PENDING: "Đang tìm tài xế phù hợp...",
-  ACCEPTED: "Tài xế đang trên đường tới...",
+  ACCEPTED: "Đang tìm tài xế phù hợp...",
+  RECEIVED: "Tài xế đang trên đường tới...",
   // driving: (next: string) => `Điểm đến tiếp theo: ${next}`,
   DRIVING: "Chuyến đi đang diễn ra...",
   COMPLETED: "Chuyến đi đã hoàn thành",
@@ -76,7 +77,7 @@ const CardTravel = (props: CardTravelProps) => {
                   style={[
                     styles.footerTitle,
                     styles[
-                      status === "PENDING" || status === "ACCEPTED"
+                      status === "PENDING" || status === "RECEIVED"
                         ? "footerTitleWarn"
                         : "footerTitleInfo"
                     ],

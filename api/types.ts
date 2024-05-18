@@ -52,6 +52,7 @@ export interface User {}
 export type BookingStatus =
   | "PENDING"
   | "ACCEPTED"
+  | "RECEIVED"
   | "REJECTED"
   | "CANCELLED"
   | "DRIVING"

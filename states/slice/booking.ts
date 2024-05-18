@@ -79,7 +79,11 @@ export const createBooking = createAsyncThunk(
     if (locations.length < 2 || id || !distance) {
       throw new Error("Invalid booking");
     }
-    const [pickup, ...stops] = locations;
+    const [pickup, ...stops] = locations.map((l) => ({
+      latitude: l.latitude,
+      longitude: l.longitude,
+      address: l.address,
+    }));
     const dropOff = stops[stops.length - 1];
     stops.pop();
     const booking = {

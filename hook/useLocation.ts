@@ -3,6 +3,8 @@ import {
   enableNetworkProviderAsync,
   startLocationUpdatesAsync,
   stopLocationUpdatesAsync,
+  requestForegroundPermissionsAsync,
+  requestBackgroundPermissionsAsync,
 } from "expo-location";
 import {
   defineTask,
@@ -41,6 +43,8 @@ export default function useLocation(initValue?: LocationType) {
         timeInterval: 1000,
         distanceInterval: 0,
         foregroundService: {
+          killServiceOnDestroy: false,
+          notificationColor: "#FF0000",
           notificationTitle: "Using your location",
           notificationBody:
             "To turn off, go back to the app and switch something off.",
