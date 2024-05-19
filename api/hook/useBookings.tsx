@@ -1,18 +1,25 @@
-import { bookingApi } from "..";
+import { Booking, PagingAndSortResponse, bookingApi } from "../";
 import { FindAllBookingDTO } from "../booking";
 import useFetch from "./useFetch";
+const initialData: PagingAndSortResponse<Booking> = {
+  data: [],
+  skip: 0,
+  take: 10,
+  total: 0,
+  order: "asc",
+  sort: "id",
+};
 
 interface UseBookingsOptions extends FindAllBookingDTO {}
 
 function useBookings(props: UseBookingsOptions) {
-  const { data, ...rest } = useFetch(
+  return useFetch(
     {
       fetchFn: () => bookingApi.getAll(props),
-      initialData: [],
+      initialData,
     },
     [props],
   );
-  return { bookings: data, ...rest };
 }
 
 export default useBookings;

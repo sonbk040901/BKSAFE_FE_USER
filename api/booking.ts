@@ -1,6 +1,11 @@
 import buildUrl from "../utils/searchParam";
 import instance from "./axios";
-import { Booking, BookingStatus, PagingAndSortDto } from "./types";
+import {
+  Booking,
+  BookingStatus,
+  PagingAndSortDto,
+  PagingAndSortResponse,
+} from "./types";
 interface LocationDTO {
   address: string;
   latitude: number;
@@ -26,7 +31,7 @@ interface RecentsBookingResponse {
 export const getAll = async (findAll: Type<FindAllBookingDTO>) => {
   const path = "bookings";
   const url = buildUrl(path, findAll);
-  const res = await instance.get<Booking[]>(url);
+  const res = await instance.get<PagingAndSortResponse<Booking>>(url);
   return res.data;
 };
 export const getOne = async (id: number) => {

@@ -10,6 +10,12 @@ export interface PagingAndSortDto {
   order?: "asc" | "desc" | "ASC" | "DESC";
   sort?: string;
 }
+
+export interface PagingAndSortResponse<T> extends Required<PagingAndSortDto> {
+  total: number;
+  data: T[];
+}
+
 export interface Location {
   address: string;
   latitude: number;
@@ -46,7 +52,7 @@ export interface Driver extends Account {
   rating: number;
   birthday: string;
   address: string;
-  location: Location;
+  location: Pick<Location, "address" | "latitude" | "longitude">;
 }
 export interface User {}
 export type BookingStatus =

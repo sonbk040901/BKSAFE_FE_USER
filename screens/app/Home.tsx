@@ -7,11 +7,10 @@ import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
 import TravelCard from "../../components/home/TravelCard";
 import { COLOR } from "../../constants/color";
-import type { AppNavigationProp } from "../../types/navigation";
-import { bookingSocket } from "../../socket";
+import { subcribe } from "../../socket";
 import { useAppDispatch } from "../../states";
 import { patchBooking } from "../../states/slice/booking";
-import { Booking } from "../../api";
+import type { AppNavigationProp } from "../../types/navigation";
 interface HomeProps {
   navigation: AppNavigationProp;
 }
@@ -24,12 +23,10 @@ const Home: FC<HomeProps> = ({ navigation }) => {
   }, [navigation, refetch]);
   useEffect(() => {
     if (status !== "success") return;
-    const unsubscribe = bookingSocket.listenCurrentBooking(refetch);
-    return unsubscribe;
+    return subcribe("booking/current", refetch);
   }, [refetch, status]);
-  const handleSelectBooking = (data?: Nullable<Booking>) => () => {
-    const booking = data ?? undefined;
-    dispatch(patchBooking(booking));
+  const handleSelectBooking = () => {
+    dispatch(patchBooking(data?.current ?? undefined));
     navigation.push("Map");
   };
   return (
@@ -50,7 +47,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
               }
               radius="md"
               buttonStyle={{ backgroundColor: COLOR.primary }}
-              onPress={handleSelectBooking(data?.current)}
+              onPress={handleSelectBooking}
               icon={{
                 name: "chevron-right",
                 size: 20,
@@ -81,13 +78,12 @@ const Home: FC<HomeProps> = ({ navigation }) => {
               <TravelCard
                 title="Chuyến đi hiện tại"
                 data={data.current}
-                onPress={handleSelectBooking(data.current)}
+                onPress={handleSelectBooking}
               />
               {data.recent && (
                 <TravelCard
                   title="Chuyến đi trước"
                   data={data.recent}
-                  onPress={handleSelectBooking(data.recent)}
                 />
               )}
             </View>

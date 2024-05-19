@@ -19,7 +19,8 @@ const History = ({}: HistoryProps) => {
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filter, setFilter] = useState({});
-  const { bookings, isLoading, refetch } = useBookings(filter);
+  const { data, isLoading, refetch } = useBookings(filter);
+  const { data: bookings } = data;
   const statistic = useMemo(() => {
     return {
       totalPrice: bookings.reduce((a, b) => a + b.price, 0),

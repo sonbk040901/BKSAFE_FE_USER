@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
+import { BookingStatus, Driver } from "../api";
 import { API_KEY } from "../api/ggmap";
 import useFindDriver from "../api/hook/useFindDriver";
 import Footer from "../components/map/Footer";
@@ -13,10 +14,13 @@ import { COLOR } from "../constants/color";
 import { IMAGE } from "../constants/image";
 import useLocation from "../hook/useLocation";
 import useOpacityStyle from "../hook/useOpacityStyle";
+import { subcribe } from "../socket";
 import { useAppDispatch, useAppSelector } from "../states";
 import {
   addLocation,
   calculatePrice,
+  patchBooking,
+  patchDriver,
   selectBooking,
   setDistance,
 } from "../states/slice/booking";
@@ -28,7 +32,7 @@ interface MapProps {
 }
 
 const Map = ({ navigation }: MapProps) => {
-  const { locations, id, distance } = useAppSelector(selectBooking);
+  const { locations, id, distance, driver } = useAppSelector(selectBooking);
   const dispatch = useAppDispatch();
   const { drivers } = useFindDriver({
     location: locations[0],
@@ -76,6 +80,29 @@ const Map = ({ navigation }: MapProps) => {
   useEffect(() => {
     dispatch(calculatePrice());
   }, [dispatch, distance]);
+  useEffect(() => {
+    const unsubcribe = subcribe("booking/current-driver", (driver: Driver) => {
+      dispatch(patchBooking({ driver, driverId: driver.id }));
+    });
+    const unsubcribe1 = subcribe(
+      "booking/current-status",
+      (status: BookingStatus) => {
+        dispatch(patchBooking({ status }));
+      },
+    );
+    const unsubcribe2 = subcribe(
+      "booking/current-driver-location",
+      (location: Driver["location"]) => {
+        if (!driver) return;
+        dispatch(patchDriver({ location }));
+      },
+    );
+    return () => {
+      unsubcribe();
+      unsubcribe1();
+      unsubcribe2();
+    };
+  }, [dispatch, driver]);
   const dialogVisible = !id && locations.length === 0;
   return (
     <KeyboardAvoidingView
@@ -172,13 +199,21 @@ const Map = ({ navigation }: MapProps) => {
             </Marker>
           );
         })}
-        {drivers.map((d) => (
+        {!driver &&
+          drivers.map((d) => (
+            <Marker
+              key={d.id}
+              coordinate={d}
+              image={IMAGE.driverPin}
+            ></Marker>
+          ))}
+        {driver && (
           <Marker
-            key={d.id}
-            coordinate={d}
+            title="Tài xế của bạn"
+            coordinate={driver.location}
             image={IMAGE.driverPin}
-          ></Marker>
-        ))}
+          />
+        )}
       </MapView>
       <Footer style={opacityStyle} />
     </KeyboardAvoidingView>

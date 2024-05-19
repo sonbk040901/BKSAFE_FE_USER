@@ -5,16 +5,17 @@ import {
 import React, { createContext, useEffect, useState } from "react";
 import useProfile from "../api/hook/useProfile";
 import { Account, ErrorResponse } from "../api";
-import { bookingSocket } from "../socket";
+import { createConnect, disconnect } from "../socket";
 type AuthStatus = "undetermined" | "authenticated" | "unauthenticated";
 
 export default function useInitApp() {
   const { status, data, refetch, error } = useProfile();
+  const [socketReady, setSocketReady] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
     PermissionStatus.UNDETERMINED,
   );
   const authStatus: AuthStatus =
-    status === "loading"
+    status === "idle" || status === "loading" || socketReady === false
       ? "undetermined"
       : status === "success"
       ? "authenticated"
@@ -33,13 +34,14 @@ export default function useInitApp() {
     init();
   }, []);
   useEffect(() => {
-    if (authStatus === "authenticated") {
-      bookingSocket.connect();
+    if (status === "success") {
+      createConnect().then(() => setSocketReady(true));
+      return () => {
+        disconnect();
+        setSocketReady(false);
+      };
     }
-    if (authStatus === "unauthenticated") {
-      bookingSocket.disconnect();
-    }
-  }, [authStatus]);
+  }, [status]);
   return { isLoading, isAuthenticated, data, refetch, error };
 }
 
