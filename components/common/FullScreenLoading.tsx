@@ -4,7 +4,7 @@ import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
 import { COLOR } from "../../constants/color";
 import { IMAGE } from "../../constants/image";
 
-const LoadingModal = (props: ComponentProps<typeof Modal>) => {
+const FullScreenLoading = (props: ComponentProps<typeof Modal>) => {
   return (
     <Modal
       visible
@@ -33,7 +33,7 @@ const LoadingModal = (props: ComponentProps<typeof Modal>) => {
   );
 };
 
-export default LoadingModal;
+export default FullScreenLoading;
 
 const styles = StyleSheet.create({
   container: {

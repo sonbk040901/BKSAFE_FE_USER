@@ -24,7 +24,7 @@ const Login = () => {
   }, [refetch, status]);
   useEffect(() => {
     if (isAuthenticated && data) {
-      navigation.replace("App", { userInfo: data });
+      navigation.replace("App");
     }
   }, [data, isAuthenticated, navigation]);
   useEffect(() => {

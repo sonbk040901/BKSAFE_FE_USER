@@ -107,7 +107,8 @@ export const bookingSlice = createSlice({
       state,
       action: PayloadAction<Partial<Booking> | undefined>,
     ) => {
-      if (!action.payload) return initialState;
+      if (!action.payload)
+        return { ...initialState, locations: state.locations };
       const payload = action.payload;
       const { notes } = payload;
       return {

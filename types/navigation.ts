@@ -1,12 +1,9 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Account } from "../api";
 export type RootNavigationParamList = {
   Splash: undefined;
-  App: {
-    userInfo: Account;
-  };
+  App: undefined;
   Map: undefined;
   Auth: undefined;
 };

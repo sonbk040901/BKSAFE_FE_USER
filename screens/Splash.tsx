@@ -16,7 +16,7 @@ const Splash = ({ navigation }: SplashProps) => {
       return;
     }
     if (isAuthenticated && data) {
-      navigation.replace("App", { userInfo: data });
+      navigation.replace("App");
       return;
     }
     navigation.replace("Auth");

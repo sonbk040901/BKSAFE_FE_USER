@@ -1,13 +1,19 @@
-import { Button, Dialog } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
 import { BookingStatus, Driver } from "../api";
 import { API_KEY } from "../api/ggmap";
 import useFindDriver from "../api/hook/useFindDriver";
+import LoadingDialog from "../components/common/LoadingDialog";
 import Footer from "../components/map/Footer";
 import PostionsBar from "../components/map/PositionsBar";
 import { COLOR } from "../constants/color";
@@ -25,6 +31,7 @@ import {
   setDistance,
 } from "../states/slice/booking";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
+import { showNativeAlert } from "../utils/alert";
 
 interface MapProps {
   navigation: RootNavigationProp;
@@ -32,7 +39,8 @@ interface MapProps {
 }
 
 const Map = ({ navigation }: MapProps) => {
-  const { locations, id, distance, driver } = useAppSelector(selectBooking);
+  const { locations, id, distance, driver, status } =
+    useAppSelector(selectBooking);
   const dispatch = useAppDispatch();
   const { drivers } = useFindDriver({
     location: locations[0],
@@ -103,6 +111,15 @@ const Map = ({ navigation }: MapProps) => {
       unsubcribe2();
     };
   }, [dispatch, driver]);
+  useEffect(() => {
+    if (status !== "COMPLETED" && status !== "REJECTED") return;
+    showNativeAlert(
+      status === "COMPLETED"
+        ? "Đã kết thúc chuyến đi"
+        : "Yêu cầu đã bị từ chối",
+    );
+    navigation.goBack();
+  }, [navigation, status]);
   const dialogVisible = !id && locations.length === 0;
   return (
     <KeyboardAvoidingView
@@ -112,17 +129,11 @@ const Map = ({ navigation }: MapProps) => {
       style={styles.container}
     >
       <StatusBar style="dark" />
-      <Dialog
-        statusBarTranslucent
+      <LoadingDialog
+        title="Đang tìm vị trí của bạn..."
         isVisible={dialogVisible}
         onRequestClose={() => navigation.goBack()}
-      >
-        <Dialog.Title
-          titleStyle={{ textAlign: "center" }}
-          title="Đang tìm vị trí của bạn..."
-        />
-        <Dialog.Loading />
-      </Dialog>
+      />
       <Animated.View style={[styles.header, opacityStyle]}>
         <View style={{ alignSelf: "flex-start" }}>
           <Button

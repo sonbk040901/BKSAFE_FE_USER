@@ -15,7 +15,7 @@ interface HomeProps {
   navigation: AppNavigationProp;
 }
 const Home: FC<HomeProps> = ({ navigation }) => {
-  const { data, refetch, status } = useRecentsBooking();
+  const { data, refetch, status, isFetching } = useRecentsBooking();
   const dispatch = useAppDispatch();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", refetch);
@@ -66,7 +66,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={status === "loading"}
+              refreshing={isFetching}
               onRefresh={refetch}
             />
           }
