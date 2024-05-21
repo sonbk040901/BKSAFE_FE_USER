@@ -1,12 +1,7 @@
 import { Button } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  View
-} from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
@@ -32,6 +27,7 @@ import {
 } from "../states/slice/booking";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
 import { showNativeAlert } from "../utils/alert";
+import { updateRating } from "../states/slice/rating";
 
 interface MapProps {
   navigation: RootNavigationProp;
@@ -119,7 +115,8 @@ const Map = ({ navigation }: MapProps) => {
         : "Yêu cầu đã bị từ chối",
     );
     navigation.goBack();
-  }, [navigation, status]);
+    if (status === "COMPLETED") dispatch(updateRating({ bookingId: id }));
+  }, [dispatch, id, navigation, status]);
   const dialogVisible = !id && locations.length === 0;
   return (
     <KeyboardAvoidingView

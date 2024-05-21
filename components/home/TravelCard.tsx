@@ -5,19 +5,17 @@ import { Avatar, Button, Divider, Icon, Skeleton } from "@rneui/themed";
 import { COLOR } from "../../constants/color";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView from "react-native-maps";
-import { Booking, BookingStatus } from "../../api";
+import { Booking, BookingStatus, Driver } from "../../api";
 import MapViewDirections from "react-native-maps-directions";
 import { API_KEY } from "../../api/ggmap";
+import { useAppDispatch } from "../../states";
+import { patchDriverInfo } from "../../states/slice/driver";
 type CardTravelProps = {
   title: string;
   data: Nullable<Booking>;
   onPress?: () => void;
 };
-type DriverProps = {
-  avatar?: string;
-  fullName: string;
-  rating: number;
-};
+type DriverProps = Driver;
 const statusMapping: Record<BookingStatus | "none", string> = {
   none: "Thuê tài xế?",
   PENDING: "Đang tìm tài xế phù hợp...",
@@ -169,24 +167,32 @@ const MiniMap = ({ booking }: { booking: Nullable<Booking> }) => {
   );
 };
 const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
+  const dispatch = useAppDispatch();
+  const { gender } = driverProps || {};
   const isSkeleton = !driverProps;
+  const handleSelectDriver = () => {
+    dispatch(patchDriverInfo(driverProps));
+  };
   return (
-    <View style={{ flexDirection: "row", gap: 10 }}>
+    <View>
       {isSkeleton ? (
-        <>
+        <View style={{ flexDirection: "row", gap: 10 }}>
           <Skeleton
             circle
             width={50}
             height={50}
+            style={{ opacity: 0.3 }}
           />
           <Skeleton
-            width={200}
             height={50}
-            style={{ borderRadius: 10 }}
+            style={{ borderRadius: 7, opacity: 0.3, flex: 1 }}
           />
-        </>
+        </View>
       ) : (
-        <>
+        <TouchableOpacity
+          style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+          onPress={handleSelectDriver}
+        >
           <Avatar
             size={50}
             avatarStyle={{
@@ -197,22 +203,54 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
             rounded
             source={require("../../assets/images/avatar.png")}
           />
-          <View style={{ justifyContent: "center" }}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-              {driverProps.fullName}
-            </Text>
+          <View style={{ justifyContent: "center", flex: 1 }}>
             <View
-              style={{ flexDirection: "row", gap: 5, alignItems: "baseline" }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+            >
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                {driverProps.fullName}
+              </Text>
+              {gender === "MALE" ? (
+                <Icon
+                  name="male"
+                  size={19}
+                  color={COLOR.primary}
+                />
+              ) : gender === "FEMALE" ? (
+                <Icon
+                  name="female"
+                  size={19}
+                  color="hotpink"
+                />
+              ) : null}
+            </View>
+            <View
+              style={{ flexDirection: "row", gap: 4, alignItems: "baseline" }}
             >
               <Icon
                 name="star"
                 type="feather"
                 size={16}
+                color={COLOR.warning}
               />
-              <Text style={{ fontSize: 16 }}>{driverProps.rating}</Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "500",
+                  color: COLOR.warning,
+                }}
+              >
+                {driverProps.rating}
+              </Text>
             </View>
           </View>
-        </>
+          <Icon
+            name="more-vertical"
+            type="feather"
+            size={20}
+            color={COLOR.secondary}
+          />
+        </TouchableOpacity>
       )}
     </View>
   );

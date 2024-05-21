@@ -23,6 +23,12 @@ export interface FindAllBookingDTO extends PagingAndSortDto {
   status?: BookingStatus;
 }
 
+export interface CreateRatingDTO {
+  bookingId: number;
+  rating: number;
+  review?: string;
+}
+
 interface RecentsBookingResponse {
   current: Nullable<Booking>;
   recent: Nullable<Booking>;
@@ -52,4 +58,8 @@ export const getRecent = async () => {
   const path = "bookings/recents";
   const res = await instance.get<RecentsBookingResponse>(path);
   return res.data;
+};
+export const createRating = async (rating: CreateRatingDTO) => {
+  const path = "bookings/rating";
+  await instance.post(path, rating);
 };
