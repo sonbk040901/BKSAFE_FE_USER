@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 15,
     zIndex: 100,
+    alignSelf: "center",
   },
   shadow: {
     shadowColor: "#575757",

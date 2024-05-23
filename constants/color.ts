@@ -1,5 +1,6 @@
 export const COLOR = {
   primary: "#1F87FE",
+  primay100: "#429affff",
   secondary: "#6E7E91",
   success: "#00C48C",
   warning: "#FF8A00",

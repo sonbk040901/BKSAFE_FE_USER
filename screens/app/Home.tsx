@@ -1,27 +1,27 @@
 import { Button, Text } from "@rneui/themed";
 import React, { FC, useEffect } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
+import { StyleSheet, View } from "react-native";
+import { BookingStatus } from "../../api";
 import { useRecentsBooking } from "../../api/hook";
 import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
 import RatingDialog from "../../components/home/RatingDialog";
-import TravelCard from "../../components/home/TravelCard";
+import TravelList from "../../components/home/TravelList";
 import { COLOR } from "../../constants/color";
+import { useInitAppContext } from "../../hook/useInitApp";
 import { subcribe } from "../../socket";
 import { useAppDispatch } from "../../states";
 import { patchBooking } from "../../states/slice/booking";
-import type { AppNavigationProp } from "../../types/navigation";
-import { BookingStatus } from "../../api";
 import { updateRating } from "../../states/slice/rating";
+import type { AppNavigationProp } from "../../types/navigation";
 import { showNativeAlert } from "../../utils/alert";
-import { useInitAppContext } from "../../hook/useInitApp";
+import DriverDetailModal from "../../components/home/DriverDetailModal";
 interface HomeProps {
   navigation: AppNavigationProp;
 }
 const Home: FC<HomeProps> = ({ navigation }) => {
   const { data: account } = useInitAppContext();
-  const { data, refetch, isFetching } = useRecentsBooking();
+  const { data, refetch } = useRecentsBooking();
   const dispatch = useAppDispatch();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", refetch);
@@ -69,38 +69,9 @@ const Home: FC<HomeProps> = ({ navigation }) => {
             />
           </Text>
         </Card>
-        <ScrollView
-          style={{
-            flex: 1,
-            width: "100%",
-          }}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={isFetching}
-              onRefresh={refetch}
-            />
-          }
-        >
-          {data && (
-            <View
-              style={{ alignItems: "center", gap: 20, paddingVertical: 20 }}
-            >
-              <TravelCard
-                title="Chuyến đi hiện tại"
-                data={data.current}
-                onPress={handleSelectBooking}
-              />
-              {data.recent && (
-                <TravelCard
-                  title="Chuyến đi trước"
-                  data={data.recent}
-                />
-              )}
-            </View>
-          )}
-        </ScrollView>
+        <TravelList />
         <RatingDialog />
+        <DriverDetailModal />
       </View>
     </AppWrapper>
   );

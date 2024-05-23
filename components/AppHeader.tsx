@@ -5,8 +5,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLOR } from "../constants/color";
+import { AppNavigationProp } from "../types/navigation";
+type AppHeaderProps = DrawerHeaderProps & {
+  navigation: AppNavigationProp;
+};
 
-const AppHeader: FC<DrawerHeaderProps> = ({ navigation, route }) => {
+const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text
@@ -57,7 +61,7 @@ const AppHeader: FC<DrawerHeaderProps> = ({ navigation, route }) => {
         <TouchableOpacity
           style={{ padding: 15 }}
           onPress={() => {
-            navigation.toggleDrawer();
+            navigation.push("Notification");
           }}
         >
           <Icon

@@ -6,6 +6,8 @@ export type RootNavigationParamList = {
   App: undefined;
   Map: undefined;
   Auth: undefined;
+  Chat: { id: string };
+  Notification: undefined;
 };
 export type RootNavigationProp = StackNavigationProp<RootNavigationParamList>;
 export type AppNavigationParamList = {

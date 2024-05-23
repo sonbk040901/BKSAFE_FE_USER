@@ -1,42 +1,57 @@
-import * as React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Icon, IconProps } from "@rneui/base";
+import React from "react";
+import { FlatList, Text, TouchableOpacity } from "react-native";
 import AppWrapper from "../../components/AppWrapper";
+import Card from "../../components/Card";
 import { AppNavigationProp } from "../../types/navigation";
-import { Button } from "@rneui/themed";
-import { authApi } from "../../api";
-import { useInitAppContext } from "../../hook/useInitApp";
 
 interface SettingProps {
   navigation: AppNavigationProp;
 }
 
-const Setting = ({ navigation }: SettingProps) => {
-  const { refetch } = useInitAppContext();
+interface SettingItem {
+  icon: IconProps;
+  title: string;
+}
+
+const Setting = ({}: SettingProps) => {
+  const items: SettingItem[] = [
+    {
+      title: "Đăng ký làm tài xế",
+      icon: { name: "user-plus", type: "feather" },
+    },
+  ];
   return (
     <AppWrapper>
-      <View style={styles.container}>
-        <Text></Text>
-        <Button
-          onPress={async () => {
-            await authApi.logout();
-            refetch();
-            navigation.replace("Auth");
+      <Card>
+        <FlatList
+          data={items}
+          renderItem={({ item, index }) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  padding: 10,
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <Icon {...item.icon} />
+                <Text style={{ fontWeight: "500", fontSize: 20, flex: 1 }}>
+                  {item.title}
+                </Text>
+                <Icon
+                  name="chevron-right"
+                  type="feather"
+                />
+              </TouchableOpacity>
+            );
           }}
-        >
-          Đăng xuất
-        </Button>
-      </View>
+        />
+      </Card>
     </AppWrapper>
   );
 };
 
 export default Setting;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
