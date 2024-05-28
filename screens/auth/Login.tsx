@@ -16,8 +16,8 @@ import { useInitAppContext } from "../../hook/useInitApp";
 
 const Login = () => {
   const navigation = useNavigation<AuthNavigationProp>();
-  const emailRef = useRef<PropsWithChildren<TextInput>>(null);
-  const { setEmail, setPassword, submit, status } = useLogin();
+  const phoneRef = useRef<PropsWithChildren<TextInput>>(null);
+  const { setPhone, setPassword, submit, status } = useLogin();
   const { data, refetch, isAuthenticated } = useInitAppContext();
   useEffect(() => {
     if (status === "success") refetch();
@@ -29,7 +29,7 @@ const Login = () => {
   }, [data, isAuthenticated, navigation]);
   useEffect(() => {
     const sto = setTimeout(() => {
-      emailRef.current?.focus();
+      phoneRef.current?.focus();
     }, 500);
     return () => {
       clearTimeout(sto);
@@ -49,9 +49,9 @@ const Login = () => {
           Đăng nhập vào ứng dụng
         </Text>
         <Input
-          ref={emailRef}
-          onChangeText={setEmail}
-          placeholder="Email"
+          ref={phoneRef}
+          onChangeText={setPhone}
+          placeholder="Số điện thoại"
         />
         <Input
           placeholder="Mật khẩu"

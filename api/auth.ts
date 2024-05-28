@@ -2,7 +2,7 @@ import instance from "./axios";
 import * as storage from "../utils/storage";
 import { Account } from "./types";
 export interface LoginDTO {
-  email: string;
+  phone: string;
   password: string;
 }
 interface SignupDTO {

@@ -4,15 +4,13 @@ import { login } from "../auth";
 import { showAlert, showNativeAlert } from "../../utils/alert";
 
 function useLogin() {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const { mutate, status, error } = useMutation({
     mutationFn: login,
   });
   useEffect(() => {
     if (status === "success") {
-      // setEmail("");
-      // setPassword("");
       showNativeAlert("Đăng nhập thành công");
       return;
     }
@@ -23,9 +21,9 @@ function useLogin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
   const submit = () => {
-    mutate({ email, password });
+    mutate({ phone: phone, password });
   };
-  return { setEmail, setPassword, submit, status };
+  return { setPhone, setPassword, submit, status };
 }
 
 export default useLogin;
