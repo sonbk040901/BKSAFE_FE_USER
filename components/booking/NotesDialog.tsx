@@ -2,7 +2,6 @@ import { Button, CheckBox, Dialog } from "@rneui/themed";
 import React, { useEffect, useRef, type FC } from "react";
 import { TextInput, View } from "react-native";
 import { COLOR } from "../../constants/color";
-import { Text } from "react-native";
 
 interface NotesDialogProps {
   text?: string;
