@@ -1,5 +1,5 @@
 import { Button, Icon, Text } from "@rneui/themed";
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { COLOR } from "../../constants/color";
@@ -8,17 +8,19 @@ import { useAppDispatch, useAppSelector } from "../../states";
 import {
   cancelBooking,
   createBooking,
+  patchBooking,
   selectBooking,
 } from "../../states/slice/booking";
+import NotesDialog from "../booking/NotesDialog";
 
 interface FooterProps extends ComponentProps<typeof Animated.View> {
   onCancel?: () => void;
 }
 
 function Footer(props: FooterProps) {
-  // const { status, price, createBooking, cancelBooking } = useMapContext();
-  const { status, price, id } = useAppSelector(selectBooking);
+  const { status, price, id, note } = useAppSelector(selectBooking);
   const dispatch = useAppDispatch();
+  const [notesAddDialogVisiable, setNotesAddDialogVisiable] = useState(false);
   const { style: customStyle, onCancel } = props;
   const isVisible = !status || status === "PENDING";
   const disable = !!(!price || status);
@@ -26,6 +28,15 @@ function Footer(props: FooterProps) {
     if (!id) return;
     dispatch(cancelBooking(id));
     onCancel?.();
+  };
+  const handleOpenNotes = () => {
+    setNotesAddDialogVisiable(true);
+  };
+  const handleCloseNotes = () => {
+    setNotesAddDialogVisiable(false);
+  };
+  const handleChangeNote = (note: string) => {
+    dispatch(patchBooking({ note }));
   };
   return (
     <Animated.View
@@ -88,11 +99,17 @@ function Footer(props: FooterProps) {
           size="md"
           type="outline"
           buttonStyle={styles.toolBtn}
+          onPress={handleOpenNotes}
         >
           Ghi chú
         </Button>
       </View>
-
+      <NotesDialog
+        text={note}
+        isVisible={notesAddDialogVisiable}
+        onRequestClose={handleCloseNotes}
+        onChangeText={handleChangeNote}
+      />
       <View style={{ width: "90%", flexDirection: "row", gap: 10 }}>
         {status && isVisible && (
           <Button
