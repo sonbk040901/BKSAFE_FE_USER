@@ -25,9 +25,9 @@ import {
   selectBooking,
   setDistance,
 } from "../states/slice/booking";
+import { updateRating } from "../states/slice/rating";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
 import { showNativeAlert } from "../utils/alert";
-import { updateRating } from "../states/slice/rating";
 
 interface MapProps {
   navigation: RootNavigationProp;
@@ -42,14 +42,15 @@ const Map = ({ navigation }: MapProps) => {
     location: locations[0],
     autoFetch: !id,
   });
-  const currentLocation = useLocation(locations[0]);
+  const { location: currentLocation } = useLocation(locations[0]);
   const [opacityStyle, setShowContent] = useOpacityStyle();
   const mapRef = useRef<MapView>(null);
   // // hide all content when drag map
   const handlePanDrag = () => setShowContent(false);
   const handlePanDragEnd = () => setShowContent(true);
   useEffect(() => {
-    if (!currentLocation || locations.length) return;
+    const length = locations.length;
+    if (!currentLocation || length) return;
     dispatch(addLocation(currentLocation));
   }, [currentLocation, dispatch, locations.length]);
   useEffect(() => {
@@ -145,7 +146,7 @@ const Map = ({ navigation }: MapProps) => {
             onPress={() => navigation.goBack()}
           />
         </View>
-        <PostionsBar />
+        <PostionsBar currentLocation={currentLocation} />
       </Animated.View>
       <MapView
         ref={mapRef}

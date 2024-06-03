@@ -5,6 +5,7 @@ import { BookingStatus } from "../../api";
 import { useRecentsBooking } from "../../api/hook";
 import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
+import DriverDetailModal from "../../components/home/DriverDetailModal";
 import RatingDialog from "../../components/home/RatingDialog";
 import TravelList from "../../components/home/TravelList";
 import { COLOR } from "../../constants/color";
@@ -15,19 +16,19 @@ import { patchBooking } from "../../states/slice/booking";
 import { updateRating } from "../../states/slice/rating";
 import type { AppNavigationProp } from "../../types/navigation";
 import { showNativeAlert } from "../../utils/alert";
-import DriverDetailModal from "../../components/home/DriverDetailModal";
 interface HomeProps {
   navigation: AppNavigationProp;
 }
 const Home: FC<HomeProps> = ({ navigation }) => {
   const { data: account } = useInitAppContext();
-  const { data, refetch } = useRecentsBooking();
+  const { data, refetch, isFetching } = useRecentsBooking();
   const dispatch = useAppDispatch();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", refetch);
     return unsubscribe;
   }, [navigation, refetch]);
   useEffect(() => {
+    if (!data?.current) return;
     return subcribe("booking/current-status", (status: BookingStatus) => {
       refetch();
       if (status === "COMPLETED") {
@@ -69,7 +70,12 @@ const Home: FC<HomeProps> = ({ navigation }) => {
             />
           </Text>
         </Card>
-        <TravelList />
+        <TravelList
+          data={data}
+          refreshing={isFetching}
+          onRefresh={refetch}
+          onSelected={handleSelectBooking}
+        />
         <RatingDialog />
         <DriverDetailModal />
       </View>

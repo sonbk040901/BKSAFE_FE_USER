@@ -16,6 +16,7 @@ interface FindAddressModalPropsType extends ComponentProps<typeof Modal> {
   placeholder?: string;
   value?: string;
   onChangeText: (v: string) => void;
+  onSelectCurrentLocation?: () => void;
   onRequestClose?: () => void;
 }
 const AddressAutocomplete = ({
@@ -23,6 +24,7 @@ const AddressAutocomplete = ({
   value = "",
   onChangeText,
   onRequestClose,
+  onSelectCurrentLocation,
   ...props
 }: FindAddressModalPropsType) => {
   const [searchText, setSearchText] = useState(value);
@@ -69,6 +71,20 @@ const AddressAutocomplete = ({
             />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            paddingTop: 10,
+            gap: 10,
+            alignItems: "center",
+          }}
+          onPress={onSelectCurrentLocation}
+        >
+          <Icon name="my-location" />
+          <Text style={{ fontWeight: "500", fontSize: 18 }}>
+            Vị trí hiện tại
+          </Text>
+        </TouchableOpacity>
         <SearchResult
           input={searchText}
           onSelectResult={(v) => {

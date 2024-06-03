@@ -1,22 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import React from "react";
-import Home from "../screens/app/Home";
-import History from "../screens/app/History";
 import AppHeader from "../components/AppHeader";
 import CustomDrawer from "../components/CustomDrawer";
-import Setting from "../screens/app/Setting";
+import History from "../screens/app/History";
+import Home from "../screens/app/Home";
 import Profile from "../screens/app/Profile";
+import Setting from "../screens/app/Setting";
 const Drawer = createDrawerNavigator();
 
 const AppNavigator = () => {
   return (
     <Drawer.Navigator
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       drawerContent={(props: any) => <CustomDrawer {...props} />}
       screenOptions={{
         swipeEnabled: true,
         swipeEdgeWidth: 50,
-        header: (props) => <AppHeader {...props} />,
+        header: (props: any) => <AppHeader {...props} />,
       }}
     >
       <Drawer.Screen

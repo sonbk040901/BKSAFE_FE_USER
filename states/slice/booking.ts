@@ -6,7 +6,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { Booking, bookingApi, ggMapApi, mapApi } from "../../api";
-import { RootState } from "../store";
+import { type RootState } from "../store";
 interface BookingState
   extends Omit<
     Booking,
@@ -49,11 +49,26 @@ export const addLocation = createAsyncThunk(
     return { ...location, address };
   },
 );
-export const replaceLocation = createAsyncThunk(
-  "booking/replaceLocation",
+export const replaceAddress = createAsyncThunk(
+  "booking/replaceAddress",
   async (payload: { index: number; address: string }) => {
     const { index, address } = payload;
     const location = await ggMapApi.geoCode(address);
+    return [index, { ...location, address }] as const;
+  },
+);
+
+export const replaceLocation = createAsyncThunk(
+  "booking/replaceLocation",
+  async (payload: {
+    index: number;
+    location: Pick<Booking["locations"][number], "latitude" | "longitude">;
+  }) => {
+    const { index, location } = payload;
+    const address = await ggMapApi.geoReverse(
+      location.latitude,
+      location.longitude,
+    );
     return [index, { ...location, address }] as const;
   },
 );
@@ -108,7 +123,7 @@ export const bookingSlice = createSlice({
       action: PayloadAction<Partial<Booking> | undefined>,
     ) => {
       if (!action.payload)
-        return { ...initialState, locations: state.locations };
+        return { ...initialState, locations: state.locations.slice(0, 1) };
       const payload = action.payload;
       const { notes } = payload;
       return {
@@ -143,6 +158,10 @@ export const bookingSlice = createSlice({
       .addCase(addAdress.fulfilled, (state, action) => {
         const { locations } = state;
         return { ...state, locations: [...locations, action.payload] };
+      })
+      .addCase(replaceAddress.fulfilled, (state, action) => {
+        const [index, location] = action.payload;
+        state.locations[index] = location;
       })
       .addCase(replaceLocation.fulfilled, (state, action) => {
         const [index, location] = action.payload;

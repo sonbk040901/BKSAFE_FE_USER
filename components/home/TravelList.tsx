@@ -1,22 +1,21 @@
 import React, { type FC } from "react";
-import { useRecentsBooking } from "../../api/hook";
-import { useAppDispatch } from "../../states";
-import { patchBooking } from "../../states/slice/booking";
-import { useNavigation } from "@react-navigation/native";
-import { AppNavigationProp } from "../../types/navigation";
 import { RefreshControl, ScrollView, View } from "react-native";
+import { RecentsBookingResponse } from "../../api/booking";
 import TravelCard from "./TravelCard";
 
-interface TravelListProps {}
+interface TravelListProps {
+  data: Nullable<RecentsBookingResponse>;
+  refreshing?: boolean;
+  onRefresh?: () => void;
+  onSelected?: () => void;
+}
 
-const TravelList: FC<TravelListProps> = () => {
-  const navigation = useNavigation<AppNavigationProp>();
-  const { data, refetch, isFetching } = useRecentsBooking();
-  const dispatch = useAppDispatch();
-  const handleSelectBooking = () => {
-    dispatch(patchBooking(data?.current ?? undefined));
-    navigation.push("Map");
-  };
+const TravelList: FC<TravelListProps> = ({
+  data,
+  refreshing = false,
+  onRefresh,
+  onSelected,
+}) => {
   return (
     <ScrollView
       style={{
@@ -26,8 +25,8 @@ const TravelList: FC<TravelListProps> = () => {
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
-          refreshing={isFetching}
-          onRefresh={refetch}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
         />
       }
     >
@@ -35,7 +34,7 @@ const TravelList: FC<TravelListProps> = () => {
         <TravelCard
           title="Chuyến đi hiện tại"
           data={data?.current ?? null}
-          onPress={handleSelectBooking}
+          onPress={onSelected}
         />
         {data?.recent && (
           <TravelCard

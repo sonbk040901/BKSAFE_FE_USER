@@ -29,7 +29,7 @@ export interface CreateRatingDTO {
   review?: string;
 }
 
-interface RecentsBookingResponse {
+export interface RecentsBookingResponse {
   current: Nullable<Booking>;
   recent: Nullable<Booking>;
 }

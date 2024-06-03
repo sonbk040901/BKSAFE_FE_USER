@@ -12,7 +12,9 @@ import { COLOR } from "../../constants/color";
 import { useAppDispatch, useAppSelector } from "../../states";
 import {
   addAdress,
+  addLocation,
   removeLocation,
+  replaceAddress,
   replaceLocation,
   selectBooking,
 } from "../../states/slice/booking";
@@ -21,11 +23,16 @@ import AddressAutocomplete from "./AddressAutocomplete";
 
 interface PostionsBarProps {
   style?: StyleProp<ViewStyle>;
+  currentLocation?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
-export default function PostionsBar({ style }: PostionsBarProps) {
-  // const { locations, addAddress, replaceLocation, removeLocation, viewOnly } =
-  //   useMapContext();
+export default function PostionsBar({
+  style,
+  currentLocation,
+}: PostionsBarProps) {
   const { locations, id } = useAppSelector(selectBooking);
   const dispatch = useAppDispatch();
   const viewOnly = Boolean(id);
@@ -47,10 +54,21 @@ export default function PostionsBar({ style }: PostionsBarProps) {
     }
     setModifyIndex(undefined);
     if (modifyIndex !== null) {
-      dispatch(replaceLocation({ address, index: modifyIndex }));
+      dispatch(replaceAddress({ address, index: modifyIndex }));
       return;
     }
     dispatch(addAdress(address));
+  };
+  const handleSelectCurrentLocation = () => {
+    if (!currentLocation || modifyIndex === undefined) return;
+    setModifyIndex(undefined);
+    if (modifyIndex !== null) {
+      dispatch(
+        replaceLocation({ location: currentLocation, index: modifyIndex }),
+      );
+      return;
+    }
+    dispatch(addLocation(currentLocation));
   };
   if (data.length === 0) return null;
   return (
@@ -65,6 +83,7 @@ export default function PostionsBar({ style }: PostionsBarProps) {
         value={modalValue}
         onChangeText={handleChangeText}
         onRequestClose={() => setModifyIndex(undefined)}
+        onSelectCurrentLocation={handleSelectCurrentLocation}
       />
       {Array(data.length * 2 - 1)
         .fill(0)
@@ -126,7 +145,9 @@ export default function PostionsBar({ style }: PostionsBarProps) {
           size={30}
           color={COLOR.secondary}
         />
-        <Text style={{ fontWeight: "400", color: COLOR.secondary }}>Thêm điểm đến</Text>
+        <Text style={{ fontWeight: "400", color: COLOR.secondary }}>
+          Thêm điểm đến
+        </Text>
       </TouchableOpacity>
     </Card>
   );
