@@ -55,11 +55,11 @@ export default function useLocation(
       setLocation(locations[0].coords);
       if (oneTime) stopLocation().catch(() => {});
     });
-    return void (() => unregisterTaskAsync(LOCATION_TASK_NAME));
+    return () => void unregisterTaskAsync(LOCATION_TASK_NAME);
   }, [stopLocation, oneTime]);
   useEffect(() => {
     startLocation().catch(() => {});
-    return void stopLocation().catch(() => {});
+    return () => void stopLocation().catch(() => {});
   }, [startLocation, stopLocation]);
   return { location, startLocation, stopLocation };
 }

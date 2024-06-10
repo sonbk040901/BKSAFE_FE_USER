@@ -52,6 +52,7 @@ const Login = () => {
           ref={phoneRef}
           onChangeText={setPhone}
           placeholder="Số điện thoại"
+          keyboardType="phone-pad"
         />
         <Input
           placeholder="Mật khẩu"
