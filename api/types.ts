@@ -42,7 +42,6 @@ export interface Account {
   fullName: string;
   avatar: string | null;
   gender: Gender;
-  driver: Driver | null;
 }
 export interface Driver extends Account {
   name: string;
@@ -54,7 +53,7 @@ export interface Driver extends Account {
   address: string;
   location: Pick<Location, "address" | "latitude" | "longitude">;
 }
-export interface User {}
+export interface User extends Account {}
 export type BookingStatus =
   | "PENDING"
   | "ACCEPTED"
