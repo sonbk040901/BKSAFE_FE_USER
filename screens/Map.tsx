@@ -1,7 +1,7 @@
 import { Button } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
@@ -120,10 +120,10 @@ const Map = ({ navigation }: MapProps) => {
   }, [dispatch, id, navigation, status]);
   const dialogVisible = !id && locations.length === 0;
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-      enabled={Platform.OS === "ios" ? true : false}
+    <View
+      // behavior={Platform.OS == "ios" ? "padding" : "height"}
+      // keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+      // enabled={Platform.OS === "ios" ? true : false}
       style={styles.container}
     >
       <StatusBar style="dark" />
@@ -225,7 +225,7 @@ const Map = ({ navigation }: MapProps) => {
         )}
       </MapView>
       <Footer style={opacityStyle} />
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

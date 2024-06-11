@@ -22,7 +22,7 @@ function Footer(props: FooterProps) {
   const dispatch = useAppDispatch();
   const [notesAddDialogVisiable, setNotesAddDialogVisiable] = useState(false);
   const { style: customStyle, onCancel } = props;
-  const isVisible = !status || status === "PENDING";
+  const isVisible = !status || status === "PENDING" || status === "ACCEPTED";
   const disable = !!(!price || status);
   const handleCreateBooking = () => {
     if (!id) return;
