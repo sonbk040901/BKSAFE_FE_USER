@@ -79,3 +79,11 @@ export interface Booking {
   updatedAt: string;
   status: BookingStatus;
 }
+export interface Noti {
+  id: number;
+  title: string;
+  content: string;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+}
