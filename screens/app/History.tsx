@@ -1,4 +1,4 @@
-import { Dialog, Divider } from "@rneui/themed";
+import { Dialog } from "@rneui/themed";
 import dayjs from "dayjs";
 import React, { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -19,21 +19,28 @@ const History = ({}: HistoryProps) => {
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filter, setFilter] = useState({});
-  const { data, isLoading, refetch } = useBookings(filter);
-  const { data: bookings } = data;
+  const {
+    data: { data: bookings },
+    isLoading,
+    refetch,
+  } = useBookings(filter);
   const statistic = useMemo(() => {
     return {
       totalPrice: bookings.reduce((a, b) => a + b.price, 0),
       totalTravle: bookings.length,
+      completedTravle: bookings.filter((item) => item.status === "COMPLETED")
+        .length,
+      canceledTravle: bookings.filter((item) => item.status === "CANCELLED")
+        .length,
     };
   }, [bookings]);
   return (
     <AppWrapper>
       <View style={styles.container}>
         <Statistic {...statistic} />
-        <Card style={{ height: 510 }}>
+        <Card style={{ height: 550 }}>
           <Filter time={value} />
-          <Divider width={0.5} />
+          {/* <Divider width={0.5} /> */}
           <Items
             loading={isLoading}
             data={bookings}

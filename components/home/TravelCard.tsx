@@ -237,7 +237,7 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
               height: 50,
             }}
             rounded
-            source={require("../../assets/images/avatar.png")}
+            source={IMAGE.avatar}
           />
           <View style={{ justifyContent: "center", flex: 1 }}>
             <View
