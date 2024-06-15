@@ -1,4 +1,4 @@
-import { AppNavigationParamList } from "./navigation";
+import { AppNavigationParamList } from "../types/navigation";
 const routeName: Record<keyof AppNavigationParamList, string> = {
   Home: "BKSafe",
   Setting: "Cài đặt",

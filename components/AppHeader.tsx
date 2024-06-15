@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLOR } from "../constants/color";
 import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
-import { mappingRouteName } from "../types/route";
+import { mappingRouteName } from "../utils/route";
 import { RouteProp } from "@react-navigation/native";
 type AppHeaderProps = DrawerHeaderProps & {
   navigation: AppNavigationProp;

@@ -7,7 +7,7 @@ import { authApi } from "../api";
 import { COLOR } from "../constants/color";
 import { useInitAppContext } from "../hook/useInitApp";
 import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
-import { mappingRouteName } from "../types/route";
+import { mappingRouteName } from "../utils/route";
 import CustomDrawerItem from "./CustomDrawerItem";
 const drawerItems: {
   icon: string;
