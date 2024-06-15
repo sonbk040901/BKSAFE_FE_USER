@@ -20,15 +20,15 @@ const Statistic = (props: StatisticProps) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          paddingVertical: 10,
+          paddingBottom: 5,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+        <Text style={{ fontSize: 18, fontWeight: "bold" }}>
           Tổng thanh toán
         </Text>
         <Text
           style={{
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: "bold",
             color: COLOR.primary,
           }}
@@ -42,7 +42,8 @@ const Statistic = (props: StatisticProps) => {
       />
       <View
         style={{
-          paddingVertical: 15,
+          paddingTop: 7,
+          paddingBottom: 11,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",

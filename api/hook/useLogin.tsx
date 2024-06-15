@@ -1,12 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { login } from "../auth";
+import { LoginDTO, login } from "../auth";
 import { showAlert, showNativeAlert } from "../../utils/alert";
+import { ErrorResponse } from "../types";
+import { AxiosError } from "axios";
 
 function useLogin() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const { mutate, status, error } = useMutation({
+  const { mutate, status, error } = useMutation<
+    string,
+    AxiosError<ErrorResponse>,
+    LoginDTO
+  >({
     mutationFn: login,
   });
   useEffect(() => {
@@ -15,7 +21,11 @@ function useLogin() {
       return;
     }
     if (error) {
-      showAlert("Đăng nhập thất bại", "Email hoặc mật khẩu không đúng");
+      const mess = error.response?.data.message;
+      showAlert(
+        "Đăng nhập thất bại",
+        typeof mess === "string" ? mess : mess?.[0],
+      );
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

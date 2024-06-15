@@ -11,6 +11,7 @@ export const COLOR = {
   errorBackground: "#FCEDED",
   primaryBackground: "#95c6ff67",
   secondaryBackground: "#5b667398",
+  successBackground: "#00C48C33",
   warningBackground: "#FF8A0033",
   appBackground: "#F4F6FA",
   secondary2: "#4C5980",

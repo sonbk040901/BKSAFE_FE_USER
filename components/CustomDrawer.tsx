@@ -1,24 +1,27 @@
-import { DrawerContentComponentProps } from "@react-navigation/drawer";
+import { DrawerNavigationState } from "@react-navigation/native";
 import { Avatar, Button, Icon } from "@rneui/themed";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { COLOR } from "../constants/color";
-import CustomDrawerItem from "./CustomDrawerItem";
 import { authApi } from "../api";
-import { AppNavigationProp } from "../types/navigation";
+import { COLOR } from "../constants/color";
 import { useInitAppContext } from "../hook/useInitApp";
+import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
+import { mappingRouteName } from "../types/route";
+import CustomDrawerItem from "./CustomDrawerItem";
 const drawerItems: {
-  name: string;
   icon: string;
   route: string;
 }[] = [
-  { name: "Home", icon: "home", route: "Home" },
-  { name: "History", icon: "file-text", route: "History" },
-  { name: "Profile", icon: "user", route: "Profile" },
-  { name: "Setting", icon: "settings", route: "Setting" },
+  { icon: "home", route: "Home" },
+  { icon: "file-text", route: "History" },
+  { icon: "user", route: "Profile" },
+  { icon: "settings", route: "Setting" },
 ];
-type Props = DrawerContentComponentProps & { navigation: AppNavigationProp };
+type Props = {
+  navigation: AppNavigationProp;
+  state: DrawerNavigationState<AppNavigationParamList>;
+};
 const CustomDrawer = ({ navigation, state }: Props) => {
   const { refetch, data } = useInitAppContext();
   const handleLogout = () => {
@@ -62,6 +65,7 @@ const CustomDrawer = ({ navigation, state }: Props) => {
               key={route.key}
               focused={focused}
               {...drawerItems[index]}
+              name={mappingRouteName(route.name)}
               onPress={() => navigation.navigate(route.name)}
             />
           );

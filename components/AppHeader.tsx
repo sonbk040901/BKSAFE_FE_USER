@@ -5,9 +5,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLOR } from "../constants/color";
-import { AppNavigationProp } from "../types/navigation";
+import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
+import { mappingRouteName } from "../types/route";
+import { RouteProp } from "@react-navigation/native";
 type AppHeaderProps = DrawerHeaderProps & {
   navigation: AppNavigationProp;
+  route: RouteProp<AppNavigationParamList>;
 };
 
 const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
@@ -21,7 +24,7 @@ const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
           fontWeight: "bold",
         }}
       >
-        {route.name === "Home" ? "BKSafe" : route.name}
+        {mappingRouteName(route.name)}
       </Text>
       <View
         style={{

@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Button, Input } from "@rneui/themed";
-import React, { PropsWithChildren, useEffect, useRef } from "react";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,17 +8,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import useLogin from "../../api/hook/useLogin";
 import AuthWrapper from "../../components/AuthWrapper";
 import { COLOR } from "../../constants/color";
-import type { AuthNavigationProp } from "../../types/navigation";
-import useLogin from "../../api/hook/useLogin";
 import { useInitAppContext } from "../../hook/useInitApp";
+import type { AuthNavigationProp } from "../../types/navigation";
 
 const Login = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const phoneRef = useRef<PropsWithChildren<TextInput>>(null);
   const { setPhone, setPassword, submit, status } = useLogin();
   const { data, refetch, isAuthenticated } = useInitAppContext();
+  const [showPass, setShowPass] = useState(false);
   useEffect(() => {
     if (status === "success") refetch();
   }, [refetch, status]);
@@ -46,18 +47,40 @@ const Login = () => {
             paddingVertical: 20,
           }}
         >
-          Đăng nhập vào ứng dụng
+          Đăng nhập tài khoản
         </Text>
         <Input
           ref={phoneRef}
           onChangeText={setPhone}
           placeholder="Số điện thoại"
           keyboardType="phone-pad"
+          leftIcon={{
+            name: "phone",
+            type: "font-awesome",
+            // color: COLOR.primary,
+          }}
+          leftIconContainerStyle={{
+            marginRight: 10,
+          }}
         />
         <Input
           placeholder="Mật khẩu"
           onChangeText={setPassword}
-          secureTextEntry
+          secureTextEntry={!showPass}
+          leftIcon={{
+            name: "lock",
+            type: "font-awesome",
+            // color: COLOR.primary,
+          }}
+          leftIconContainerStyle={{
+            marginRight: 10,
+          }}
+          rightIcon={{
+            name: showPass ? "eye" : "eye-slash",
+            type: "font-awesome",
+            // color: COLOR.primary,
+            onPress: () => setShowPass(!showPass),
+          }}
         />
         <Button
           titleStyle={{
@@ -101,8 +124,6 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
   },

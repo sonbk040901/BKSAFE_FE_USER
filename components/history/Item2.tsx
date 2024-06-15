@@ -1,10 +1,11 @@
-import React, { type FC } from "react";
-import { Text, View } from "react-native";
-import { Booking } from "../../api";
-import { Avatar, Badge, Button, Divider } from "@rneui/themed";
-import { IMAGE } from "../../constants/image";
-import { COLOR } from "../../constants/color";
+import { Avatar, Divider } from "@rneui/themed";
 import dayjs from "dayjs";
+import React, { type FC } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Booking } from "../../api";
+import { COLOR } from "../../constants/color";
+import { IMAGE } from "../../constants/image";
+import Badge from "../common/Badge";
 
 interface ItemProps {
   booking: Booking;
@@ -12,10 +13,25 @@ interface ItemProps {
 
 const Item: FC<ItemProps> = (props) => {
   const { booking } = props;
-  const { price, createdAt, driver } = booking;
+  const { price, createdAt, driver, status } = booking;
   return (
-    <View style={{ backgroundColor: "#e0efff67", padding: 5, borderRadius: 5 }}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+    <TouchableOpacity
+      style={{
+        backgroundColor: "#eff7ffff",
+        padding: 7,
+        borderRadius: 5,
+        borderColor: COLOR.primaryBackground,
+        borderWidth: 0.3,
+      }}
+      activeOpacity={0.7}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 4,
+        }}
+      >
         {driver && (
           <Avatar
             size={25}
@@ -62,33 +78,38 @@ const Item: FC<ItemProps> = (props) => {
         <View>
           <Text
             numberOfLines={1}
-            style={{ fontSize: 12, color: COLOR.dark }}
+            style={{ fontSize: 12, color: COLOR.dark, fontWeight: "500" }}
           >
             Số nhà 31, ngõ 22, TQB, HN
           </Text>
           <Text
             numberOfLines={1}
-            style={{ fontSize: 12, color: COLOR.dark }}
+            style={{ fontSize: 12, color: COLOR.dark, fontWeight: "500" }}
           >
             57 Huỳnh Thúc Kháng
           </Text>
         </View>
-        <Button
-          type="clear"
-          titleStyle={{ fontSize: 13 }}
-        >
+        <Text style={{ fontSize: 13, fontWeight: "500", color: COLOR.primary }}>
           Xem chi tiết
-        </Button>
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text style={{ fontWeight: "500", fontSize: 18, color: COLOR.error }}>
-          - {price.toLocaleString("vi")}đ
         </Text>
-        <View>
-          <Badge value="Thành công" />
-        </View>
       </View>
-    </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontWeight: "500", fontSize: 17, color: COLOR.error }}>
+          {price.toLocaleString("vi")} VNĐ
+        </Text>
+        <Badge
+          icon=""
+          value={status === "COMPLETED" ? "Thành công" : "Đã hủy"}
+          type={status === "COMPLETED" ? "success" : "danger"}
+        />
+      </View>
+    </TouchableOpacity>
   );
 };
 

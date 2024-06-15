@@ -61,6 +61,7 @@ const data: Noti[] = [
 const SystemNotis = () => {
   return (
     <FlatList
+      showsVerticalScrollIndicator={false}
       style={{ flex: 1, padding: 10, paddingTop: 0 }}
       data={data}
       keyExtractor={(item) => item.id.toString()}

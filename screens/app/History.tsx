@@ -38,9 +38,8 @@ const History = ({}: HistoryProps) => {
     <AppWrapper>
       <View style={styles.container}>
         <Statistic {...statistic} />
-        <Card style={{ height: 550 }}>
-          <Filter time={value} />
-          {/* <Divider width={0.5} /> */}
+        <Card style={{ height: 500 }}>
+          {/* <Filter time={value} /> */}
           <Items
             loading={isLoading}
             data={bookings}
