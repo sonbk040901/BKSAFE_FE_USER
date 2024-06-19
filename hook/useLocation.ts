@@ -35,7 +35,7 @@ export default function useLocation(
   }, []);
   const startLocation = useCallback(async () => {
     await enableNetworkProviderAsync();
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 100));
     await startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: LocationAccuracy.Highest,
       timeInterval: 1000,
