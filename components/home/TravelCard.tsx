@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 import { Booking, BookingStatus, Driver } from "../../api";
 import MapViewDirections from "react-native-maps-directions";
-import { API_KEY } from "../../api/ggmap";
+import { getApiKey } from "../../api/ggmap";
 import { useAppDispatch } from "../../states";
 import { patchDriverInfo } from "../../states/slice/driver";
 import { IMAGE } from "../../constants/image";
@@ -28,6 +28,7 @@ const statusMapping: Record<BookingStatus | "none", string> = {
   COMPLETED: "Chuyến đi đã hoàn thành",
   REJECTED: "Tài xế đã từ chối chuyến đi",
   CANCELLED: "Chuyến đi đã bị hủy",
+  TIMEOUT: "Hết thời gian chờ",
 };
 const CardTravel = (props: CardTravelProps) => {
   const { title, onPress, data, viewOnly = false } = props;
@@ -163,7 +164,7 @@ const MiniMap = ({ booking }: { booking: Nullable<Booking> }) => {
       >
         {locations && (
           <MapViewDirections
-            apikey={API_KEY}
+            apikey={getApiKey()}
             region="vn"
             language="vi"
             timePrecision="now"

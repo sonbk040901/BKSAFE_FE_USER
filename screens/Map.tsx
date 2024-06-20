@@ -6,7 +6,7 @@ import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
 import { BookingStatus, Driver } from "../api";
-import { API_KEY } from "../api/ggmap";
+import { getApiKey } from "../api/ggmap";
 import useFindDriver from "../api/hook/useFindDriver";
 import LoadingDialog from "../components/common/LoadingDialog";
 import Footer from "../components/map/Footer";
@@ -28,7 +28,6 @@ import {
 import { updateRating } from "../states/slice/rating";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
 import { showAlert, showNativeAlert } from "../utils/alert";
-
 interface MapProps {
   navigation: RootNavigationProp;
   route: MapRouteProp;
@@ -171,7 +170,7 @@ const Map = ({ navigation }: MapProps) => {
       >
         {locations.length > 1 && (
           <MapViewDirections
-            apikey={API_KEY}
+            apikey={getApiKey()}
             region="vn"
             language="vi"
             timePrecision="now"

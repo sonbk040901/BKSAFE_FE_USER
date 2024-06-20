@@ -4,18 +4,22 @@ import {
 } from "expo-location";
 import React, { createContext, useEffect, useState } from "react";
 import useProfile from "../api/hook/useProfile";
-import { Account, ErrorResponse } from "../api";
+import { Account, ErrorResponse, mapApi } from "../api";
 import { createConnect, disconnect } from "../socket";
 type AuthStatus = "undetermined" | "authenticated" | "unauthenticated";
 
 export default function useInitApp() {
   const { status, data, refetch, error } = useProfile();
   const [socketReady, setSocketReady] = useState(false);
+  const [apiKeyReady, setApiKeyReady] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
     PermissionStatus.UNDETERMINED,
   );
   const authStatus: AuthStatus =
-    status === "idle" || status === "loading" || socketReady === false
+    status === "idle" ||
+    status === "loading" ||
+    socketReady === false ||
+    apiKeyReady === false
       ? "undetermined"
       : status === "success"
       ? "authenticated"
@@ -36,6 +40,7 @@ export default function useInitApp() {
   useEffect(() => {
     if (status === "success") {
       createConnect().then(() => setSocketReady(true));
+      mapApi.getApiKey().then(() => setApiKeyReady(true));
       return () => {
         disconnect();
         setSocketReady(false);
