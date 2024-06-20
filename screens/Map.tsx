@@ -27,7 +27,7 @@ import {
 } from "../states/slice/booking";
 import { updateRating } from "../states/slice/rating";
 import { MapRouteProp, RootNavigationProp } from "../types/navigation";
-import { showNativeAlert } from "../utils/alert";
+import { showAlert, showNativeAlert } from "../utils/alert";
 
 interface MapProps {
   navigation: RootNavigationProp;
@@ -109,6 +109,11 @@ const Map = ({ navigation }: MapProps) => {
     };
   }, [dispatch, driver]);
   useEffect(() => {
+    if (status === "TIMEOUT") {
+      showAlert("Không tìm thấy", "Không tìm thấy tài xế phù hợp!");
+      dispatch(patchBooking({ id: undefined, status: undefined }));
+      return;
+    }
     if (status !== "COMPLETED" && status !== "REJECTED") return;
     showNativeAlert(
       status === "COMPLETED"
