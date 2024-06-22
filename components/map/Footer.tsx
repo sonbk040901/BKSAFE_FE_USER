@@ -12,6 +12,7 @@ import {
   selectBooking,
 } from "../../states/slice/booking";
 import NotesDialog from "../booking/NotesDialog";
+import useFindDriverMode from "../../api/hook/useFindDriverMode";
 
 interface FooterProps extends ComponentProps<typeof Animated.View> {
   onCancel?: () => void;
@@ -21,6 +22,7 @@ function Footer(props: FooterProps) {
   const { status, price, id, note } = useAppSelector(selectBooking);
   const dispatch = useAppDispatch();
   const [notesAddDialogVisiable, setNotesAddDialogVisiable] = useState(false);
+  const { data: autoFind } = useFindDriverMode();
   const { style: customStyle, onCancel } = props;
   const isVisible = !status || status === "PENDING" || status === "ACCEPTED";
   const disable = !!(!price || status);
@@ -43,6 +45,15 @@ function Footer(props: FooterProps) {
       {...props}
       style={[customStyle, styles.container, STYLE.shadow]}
     >
+      <View
+        style={{ width: "100%", position: "absolute", top: -15, right: 10 }}
+      >
+        <Text style={{ fontSize: 10, fontWeight: "500", textAlign: "right" }}>
+          {status === "PENDING" &&
+            !autoFind &&
+            "Quản trị viên sẽ liên hệ với bạn sau ít phút"}
+        </Text>
+      </View>
       <Button
         buttonStyle={{
           backgroundColor: COLOR.primaryBackground,

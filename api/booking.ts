@@ -63,3 +63,8 @@ export const createRating = async (rating: CreateRatingDTO) => {
   const path = "bookings/rating";
   await instance.post(path, rating);
 };
+export const getFindDriverMode = async () => {
+  const path = "bookings/mode";
+  const res = await instance.get<boolean>(path);
+  return res.data;
+};
