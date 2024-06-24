@@ -7,4 +7,5 @@ export const IMAGE = {
   homePin: require("../assets/images/home-pin.png"),
   downPin: require("../assets/images/down-pin.png"),
   avatar: require("../assets/images/avatar.png"),
+  hotline: require("../assets/images/hotline.png"),
 } as const;

@@ -6,6 +6,7 @@ import { useRecentsBooking } from "../../api/hook";
 import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
 import DriverDetailModal from "../../components/home/DriverDetailModal";
+import Hotline from "../../components/home/Hotline";
 import RatingDialog from "../../components/home/RatingDialog";
 import TravelList from "../../components/home/TravelList";
 import { COLOR } from "../../constants/color";
@@ -78,6 +79,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
         />
         <RatingDialog />
         <DriverDetailModal />
+        <Hotline />
       </View>
     </AppWrapper>
   );
