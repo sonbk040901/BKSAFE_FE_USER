@@ -40,3 +40,4 @@ yarn.lock
 android
 
 .env
+.env.prod
