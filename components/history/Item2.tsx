@@ -20,8 +20,8 @@ const Item: FC<ItemProps> = (props) => {
         backgroundColor: "#eff7ffff",
         padding: 7,
         borderRadius: 5,
-        borderColor: COLOR.primaryBackground,
-        borderWidth: 0.3,
+        // borderColor: COLOR.primaryBackground,
+        // borderWidth: 0.3,
       }}
       activeOpacity={0.7}
     >
@@ -39,8 +39,8 @@ const Item: FC<ItemProps> = (props) => {
               resizeMode: "contain",
               width: 25,
               height: 25,
-              borderWidth: 0.3,
-              borderColor: COLOR.secondary,
+              // borderWidth: 0.3,
+              // borderColor: COLOR.secondary,
             }}
             rounded
             source={driver.avatar ? { uri: driver.avatar } : IMAGE.avatar}

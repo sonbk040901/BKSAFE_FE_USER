@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "@rneui/themed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "dayjs/locale/vi";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import "react-native-gesture-handler";

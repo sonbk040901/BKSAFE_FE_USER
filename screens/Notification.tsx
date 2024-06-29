@@ -1,41 +1,30 @@
 import { Button } from "@rneui/themed";
-import React, { useState, type FC } from "react";
+import React, { type FC } from "react";
 import { Text, View } from "react-native";
-import { SceneMap, TabView } from "react-native-tab-view";
+import PersonalNotis from "../components/notification/PersonalNotis";
 import { COLOR } from "../constants/color";
 import { RootNavigationProp } from "../types/navigation";
-import PersonalNotis from "../components/notification/PersonalNotis";
-import SystemNotis from "../components/notification/SystemNotis";
-const renderScene = SceneMap({
-  first: PersonalNotis,
-  second: SystemNotis,
-});
 interface NotificationProps {
   navigation: RootNavigationProp;
 }
 
 const Notification: FC<NotificationProps> = ({ navigation }) => {
-  const [tab, setTab] = useState<number>(0);
-  const [routes] = useState([
-    { key: "first", title: "First" },
-    { key: "second", title: "Second" },
-  ]);
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View
         style={{
-          height: 70,
+          height: 100,
           backgroundColor: COLOR.primaryBackground,
           justifyContent: "center",
           alignItems: "center",
-          paddingTop: 20,
+          paddingTop: 40,
         }}
       >
         <View
           style={{
             position: "absolute",
             left: 7,
-            top: 20,
+            top: 48,
             height: "100%",
           }}
         >
@@ -54,15 +43,15 @@ const Notification: FC<NotificationProps> = ({ navigation }) => {
         <Text
           style={{
             fontWeight: "600",
-            fontSize: 22,
+            fontSize: 25,
             color: COLOR.primary,
-            textTransform: "uppercase",
+            // textTransform: "uppercase",
           }}
         >
           Thông báo
         </Text>
       </View>
-      <View
+      {/* <View
         style={{
           // height: 50,
           // backgroundColor: COLOR.primaryBackground,
@@ -89,13 +78,8 @@ const Notification: FC<NotificationProps> = ({ navigation }) => {
         >
           Hệ thống
         </Button>
-      </View>
-      <TabView
-        navigationState={{ index: tab, routes }}
-        onIndexChange={setTab}
-        renderScene={renderScene}
-        renderTabBar={() => null}
-      />
+      </View> */}
+      <PersonalNotis />
     </View>
   );
 };

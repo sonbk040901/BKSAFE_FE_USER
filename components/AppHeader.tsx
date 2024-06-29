@@ -75,6 +75,32 @@ const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
           />
         </TouchableOpacity>
       </View>
+      {route.name === "Home" && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 47,
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <TouchableOpacity
+            style={{ padding: 15 }}
+            onPress={() => {
+              navigation.push("Chat");
+            }}
+          >
+            <Icon
+              name="chatbubble-ellipses-outline"
+              type="ionicon"
+              size={25}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

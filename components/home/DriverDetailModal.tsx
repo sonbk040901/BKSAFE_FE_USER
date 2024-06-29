@@ -19,6 +19,10 @@ const DriverDetailModal: FC<DriverDetailModalProps> = () => {
   const handleClose = () => {
     dispatch(patchDriverId());
   };
+  const handleNavigateChat = () => {
+    dispatch(patchDriverId());
+    navigation.push("DetailChat", { id: "1" });
+  };
   return (
     <Dialog
       isVisible={isVisible}
@@ -100,9 +104,7 @@ const DriverDetailModal: FC<DriverDetailModalProps> = () => {
             }}
             titleStyle={{ color: "white" }}
             containerStyle={{ flex: 1 }}
-            onPress={() => {
-              navigation.push("Chat", { id: "1" });
-            }}
+            onPress={handleNavigateChat}
           />
         </View>
       </View>

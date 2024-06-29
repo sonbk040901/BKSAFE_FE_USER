@@ -6,7 +6,8 @@ export type RootNavigationParamList = {
   App: undefined;
   Map: undefined;
   Auth: undefined;
-  Chat: { id: string };
+  Chat: undefined;
+  DetailChat: { driverId: number };
   Notification: undefined;
 };
 export type RootNavigationProp = StackNavigationProp<RootNavigationParamList>;
@@ -26,3 +27,7 @@ export type AuthNavigationParamList = {
 export type AuthNavigationProp = StackNavigationProp<AuthNavigationParamList> &
   StackNavigationProp<RootNavigationParamList>;
 export type MapRouteProp = RouteProp<RootNavigationParamList, "Map">;
+export type DetailChatRouteProp = RouteProp<
+  RootNavigationParamList,
+  "DetailChat"
+>;

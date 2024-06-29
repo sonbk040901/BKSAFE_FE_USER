@@ -238,7 +238,9 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
               height: 50,
             }}
             rounded
-            source={IMAGE.avatar}
+            source={
+              driverProps.avatar ? { uri: driverProps.avatar } : IMAGE.avatar
+            }
           />
           <View style={{ justifyContent: "center", flex: 1 }}>
             <View
@@ -277,7 +279,7 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
                   color: COLOR.warning,
                 }}
               >
-                {driverProps.rating}
+                {+driverProps.rating.toFixed(2)}
               </Text>
             </View>
           </View>

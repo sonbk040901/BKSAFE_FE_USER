@@ -6,7 +6,6 @@ import DateTimePicker from "react-native-ui-datepicker";
 import useBookings from "../../api/hook/useBookings";
 import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
-import Filter from "../../components/history/Filter";
 import Items from "../../components/history/Items";
 import Statistic from "../../components/history/Statistic";
 import type { AuthNavigationProp } from "../../types/navigation";
@@ -38,7 +37,7 @@ const History = ({}: HistoryProps) => {
     <AppWrapper>
       <View style={styles.container}>
         <Statistic {...statistic} />
-        <Card style={{ height: 500 }}>
+        <Card style={{ height: 550 }}>
           {/* <Filter time={value} /> */}
           <Items
             loading={isLoading}
@@ -58,7 +57,7 @@ const History = ({}: HistoryProps) => {
             value={value}
             mode="date"
             onValueChange={(value) => {
-              setValue(dayjs(value));
+              if (value) setValue(dayjs(value));
               setOpen(false);
             }}
           />

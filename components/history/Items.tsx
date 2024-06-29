@@ -12,7 +12,7 @@ interface ItemsProps {
 }
 
 const Items = (props: ItemsProps) => {
-  const { data, onSelected, onRequestRefresh, loading = true } = props;
+  const { data, onRequestRefresh, loading = true } = props;
 
   return (
     <View style={styles.container}>

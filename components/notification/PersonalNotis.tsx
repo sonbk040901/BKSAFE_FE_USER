@@ -62,7 +62,7 @@ const PersonalNotis = () => {
   return (
     <FlatList
       showsVerticalScrollIndicator={false}
-      style={{ flex: 1, padding: 10, paddingTop: 0 }}
+      style={{ flex: 1, padding: 15, paddingTop: 10 }}
       data={data}
       keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={{ gap: 10, paddingBottom: 30 }}
@@ -99,10 +99,10 @@ const PersonalNotis = () => {
               <View
                 style={{
                   flexDirection: "row",
-                  backgroundColor: "#c7e0fc67",
+                  // backgroundColor: "#c7e0fc67",
                   padding: 5,
-                  borderWidth: 0.5,
-                  borderColor: COLOR.primaryBackground,
+                  // borderWidth: 0.5,
+                  // borderColor: COLOR.primaryBackground,
                   overflow: "hidden",
                   borderRadius: 5,
                 }}
@@ -135,7 +135,3 @@ const PersonalNotis = () => {
 };
 
 export default PersonalNotis;
-
-const styles = StyleSheet.create({
-  container: {},
-});

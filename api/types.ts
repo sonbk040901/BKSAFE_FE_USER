@@ -36,7 +36,6 @@ export interface Account {
   id: number;
   createdAt: string;
   updatedAt: string;
-  username: string;
   email: string;
   phone: string;
   fullName: string;
@@ -44,7 +43,6 @@ export interface Account {
   gender: Gender;
 }
 export interface Driver extends Account {
-  name: string;
   phone: string;
   email: string;
   avatar: string;
@@ -87,4 +85,14 @@ export interface Noti {
   image?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Chat {
+  id: number;
+  message: string;
+  createdAt: string;
+  userId: number;
+  driverId: number;
+  user: User;
+  driver: Driver;
 }

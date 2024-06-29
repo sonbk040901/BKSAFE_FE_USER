@@ -17,6 +17,7 @@ const drawerItems: {
   { icon: "file-text", route: "History" },
   { icon: "user", route: "Profile" },
   { icon: "settings", route: "Setting" },
+  { icon: "settings", route: "Setting" },
 ];
 type Props = {
   navigation: AppNavigationProp;
@@ -43,7 +44,11 @@ const CustomDrawer = ({ navigation, state }: Props) => {
         <View style={styles.userInfo}>
           <Avatar
             size={50}
-            source={require("../assets/images/avatar.png")}
+            source={
+              data?.avatar
+                ? { uri: data.avatar }
+                : require("../assets/images/avatar.png")
+            }
             avatarStyle={{
               resizeMode: "contain",
               width: 50,

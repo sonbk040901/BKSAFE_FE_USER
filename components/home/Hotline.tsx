@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { Image, Linking, TouchableOpacity } from "react-native";
 import { IMAGE } from "../../constants/image";
 import { STYLE } from "../../constants/theme";
 
@@ -19,6 +19,9 @@ const Hotline: FC<HotlineProps> = () => {
         },
         STYLE.shadow,
       ]}
+      onPress={() => {
+        Linking.openURL(`tel:0353763088`);
+      }}
     >
       <Image
         height={10}
