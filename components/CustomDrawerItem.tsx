@@ -1,8 +1,8 @@
+import { DrawerItem } from "@react-navigation/drawer";
+import { Icon } from "@rneui/themed";
 import React, { FC } from "react";
 import { Text, View } from "react-native";
 import { COLOR } from "../constants/color";
-import { DrawerItem } from "@react-navigation/drawer";
-import { Icon } from "@rneui/themed";
 
 interface CustomDrawerItemProps {
   name: string;

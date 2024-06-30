@@ -11,7 +11,7 @@ import { mappingRouteName } from "../utils/route";
 import CustomDrawerItem from "./CustomDrawerItem";
 const drawerItems: {
   icon: string;
-  route: string;
+  route: keyof AppNavigationParamList;
 }[] = [
   { icon: "home", route: "Home" },
   { icon: "file-text", route: "History" },
