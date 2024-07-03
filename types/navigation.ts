@@ -23,6 +23,7 @@ export type AuthNavigationParamList = {
   GetStarted: undefined;
   Login: undefined;
   Register: undefined;
+  Active: { phone: string };
 };
 export type AuthNavigationProp = StackNavigationProp<AuthNavigationParamList> &
   StackNavigationProp<RootNavigationParamList>;
@@ -31,3 +32,4 @@ export type DetailChatRouteProp = RouteProp<
   RootNavigationParamList,
   "DetailChat"
 >;
+export type ActiveRouteProp = RouteProp<AuthNavigationParamList, "Active">;

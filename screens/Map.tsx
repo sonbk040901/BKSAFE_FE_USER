@@ -97,8 +97,6 @@ const Map = ({ navigation }: MapProps) => {
     const unsubcribe2 = subcribe(
       "booking/current-driver-location",
       (location: Driver["location"]) => {
-        console.log("location", location);
-        
         if (!driver) return;
         dispatch(patchDriver({ location }));
       },
@@ -109,6 +107,16 @@ const Map = ({ navigation }: MapProps) => {
       unsubcribe2();
     };
   }, [dispatch, driver]);
+  useEffect(() => {
+    const sto = setTimeout(() => {
+      showAlert(
+        "Có lỗi xảy ra",
+        "Api key hết hạn, ứng dụng quá cùi!\nVui lòng liên hệ admin để cập nhật api key mới!",
+      );
+      navigation.goBack();
+    }, 7000);
+    return () => clearTimeout(sto);
+  }, [navigation]);
   useEffect(() => {
     if (status === "TIMEOUT") {
       showAlert("Không tìm thấy", "Không tìm thấy tài xế phù hợp!");

@@ -5,14 +5,16 @@ export interface LoginDTO {
   phone: string;
   password: string;
 }
-interface SignupDTO {
-  username: string;
+export interface SignupDTO {
   password: string;
   email: string;
   fullName: string;
   phone: string;
 }
-
+export interface ActiveDTO {
+  phone: string;
+  activationCode: string;
+}
 export const login = async (login: LoginDTO) => {
   const path = "auth/login";
   const res = await instance.post<string>(path, login);
@@ -21,8 +23,12 @@ export const login = async (login: LoginDTO) => {
   return token;
 };
 export const signup = async (signup: SignupDTO) => {
-  const path = "auth/signup";
+  const path = "auth/register";
   await instance.post(path, signup);
+};
+export const active = async (active: ActiveDTO) => {
+  const path = "auth/active";
+  await instance.patch(path, active);
 };
 export const logout = async () => {
   await storage.removeData("token");

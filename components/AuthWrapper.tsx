@@ -15,11 +15,11 @@ const AuthWrapper: FC<AuthWrapperProps> = ({ children }) => {
         source={IMAGE.cropLogo}
         style={{
           width: 300,
-          height: 200,
+          height: 190,
           objectFit: "contain",
         }}
       />
-      <View style={{ width: "100%" }}>{children}</View>
+      <View style={{ width: "100%", flex: 1 }}>{children}</View>
     </SafeAreaView>
   );
 };

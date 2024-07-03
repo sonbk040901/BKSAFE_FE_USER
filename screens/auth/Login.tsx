@@ -17,7 +17,8 @@ import type { AuthNavigationProp } from "../../types/navigation";
 const Login = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const phoneRef = useRef<PropsWithChildren<TextInput>>(null);
-  const { setPhone, setPassword, submit, status } = useLogin();
+  const { setPhone, setPassword, submit, status, getError, clearError } =
+    useLogin();
   const { data, refetch, isAuthenticated } = useInitAppContext();
   const [showPass, setShowPass] = useState(false);
   useEffect(() => {
@@ -51,7 +52,10 @@ const Login = () => {
         </Text>
         <Input
           ref={phoneRef}
-          onChangeText={setPhone}
+          onChangeText={(v) => {
+            clearError();
+            setPhone(v);
+          }}
           placeholder="Số điện thoại"
           keyboardType="phone-pad"
           leftIcon={{
@@ -59,13 +63,32 @@ const Login = () => {
             type: "font-awesome",
             // color: COLOR.primary,
           }}
+          errorMessage={getError("phone")}
           leftIconContainerStyle={{
             marginRight: 10,
           }}
+          inputContainerStyle={{
+            borderRadius: 10,
+            backgroundColor: "white",
+            borderWidth: 0.5,
+            paddingHorizontal: 10,
+            borderColor: COLOR.secondaryBackground,
+          }}
         />
         <Input
+          inputContainerStyle={{
+            borderRadius: 10,
+            backgroundColor: "white",
+            borderWidth: 0.5,
+            paddingHorizontal: 10,
+            borderColor: COLOR.secondaryBackground,
+          }}
           placeholder="Mật khẩu"
-          onChangeText={setPassword}
+          errorMessage={getError("password")}
+          onChangeText={(v) => {
+            clearError();
+            setPassword(v);
+          }}
           secureTextEntry={!showPass}
           leftIcon={{
             name: "lock",
@@ -125,6 +148,6 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
 });
