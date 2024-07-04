@@ -1,5 +1,5 @@
 import { Button, Icon } from "@rneui/themed";
-import React, { type FC } from "react";
+import React, { useEffect, type FC } from "react";
 import { Image, Text, TextInput, View } from "react-native";
 import {
   GiftedChat,
@@ -11,7 +11,8 @@ import {
 import { Account, chatApi } from "../api";
 import { useFetch } from "../api/hook";
 import { COLOR } from "../constants/color";
-import useInitApp from "../hook/useInitApp";
+import { useInitAppContext } from "../hook/useInitApp";
+import { emit, subcribe } from "../socket";
 import { DetailChatRouteProp, RootNavigationProp } from "../types/navigation";
 
 interface DetailChatProps {
@@ -22,12 +23,15 @@ interface DetailChatProps {
 const DetailChat: FC<DetailChatProps> = (props) => {
   const { navigation, route } = props;
   const { driverId } = route.params;
-  const { data: user } = useInitApp();
-  const { data } = useFetch({
+  const { data: user } = useInitAppContext();
+  const { data, refetch } = useFetch({
     fetchFn: () => chatApi.getChatDetail(driverId),
   });
   const driver = data?.driver;
-  const messages = mappingChat(data, user);
+  const messages = mappingChat(data, user).reverse();
+  useEffect(() => {
+    return subcribe("chat/new-chat", refetch);
+  }, [refetch]);
   if (!driver || !user) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -35,6 +39,12 @@ const DetailChat: FC<DetailChatProps> = (props) => {
       </View>
     );
   }
+  const handleNewChat = (message: string) => {
+    emit("chat/new-chat", {
+      message,
+      to: driverId,
+    });
+  };
   return (
     <View style={{ backgroundColor: "white", flex: 1, width: "100%" }}>
       <View
@@ -60,7 +70,7 @@ const DetailChat: FC<DetailChatProps> = (props) => {
           onPress={() => navigation.goBack()}
         />
         <Image
-          src={driver.avatar}
+          src={driver.avatar ?? undefined}
           style={{ width: 50, height: 50, borderRadius: 35, marginRight: 10 }}
         />
         <View>
@@ -105,7 +115,7 @@ const DetailChat: FC<DetailChatProps> = (props) => {
           );
         }}
         onSend={(newMessages) => {
-          // setMessages([...newMessages, ...messages]);
+          handleNewChat(newMessages[0].text);
         }}
         renderFooter={() => <View style={{ height: 30 }}></View>}
         renderInputToolbar={(props) => {

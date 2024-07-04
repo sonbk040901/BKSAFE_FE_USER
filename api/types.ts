@@ -45,7 +45,6 @@ export interface Account {
 export interface Driver extends Account {
   phone: string;
   email: string;
-  avatar: string;
   rating: number;
   birthday: string;
   address: string;

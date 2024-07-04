@@ -1,11 +1,11 @@
-import * as React from "react";
-import { Text, View, StyleSheet, Image, FlatList } from "react-native";
-import { IMAGE } from "../../constants/image";
-import { COLOR } from "../../constants/color";
 import { Button } from "@rneui/themed";
+import * as React from "react";
+import { FlatList, Image, Text, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
-import timeDiff from "../../utils/timeDiff";
 import { Noti } from "../../api";
+import { COLOR } from "../../constants/color";
+import { IMAGE } from "../../constants/image";
+import timeDiff from "../../utils/timeDiff";
 
 const data: Noti[] = [
   {

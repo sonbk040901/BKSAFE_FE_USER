@@ -1,12 +1,13 @@
 import { Button } from "@rneui/themed";
 import dayjs from "dayjs";
 import { StatusBar } from "expo-status-bar";
-import React, { type FC } from "react";
+import React, { useEffect, type FC } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { Chat as ChatType, chatApi } from "../api";
 import { useFetch } from "../api/hook";
 import { COLOR } from "../constants/color";
 import { RootNavigationProp } from "../types/navigation";
+import { subcribe } from "../socket";
 
 interface ChatProps {
   navigation: RootNavigationProp;
@@ -16,6 +17,9 @@ const Chat: FC<ChatProps> = ({ navigation }) => {
     fetchFn: chatApi.getChats,
     initialData: [],
   });
+  useEffect(() => {
+    return subcribe("chat/new-chat", refetch);
+  }, [refetch]);
   const renderItem = ({ item }: { item: ChatType }) => (
     <TouchableOpacity
       style={{
