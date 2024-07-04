@@ -69,6 +69,8 @@ function useFetch<D, RD extends D | undefined>(
   const [state, dispatch] = useReducer(reducer, {
     status: "idle",
     data: initialData || null,
+    isLoading: false,
+    isFetching: false,
     error: null,
   });
   const refetch = useCallback(

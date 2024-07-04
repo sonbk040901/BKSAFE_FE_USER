@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
 import { io, Socket } from "socket.io-client";
 import { getData } from "../utils/storage";
-export const ENDPOINT = `${process.env.EXPO_PUBLIC_BACKEND_URL}:${process.env.EXPO_PUBLIC_BACKEND_PORT}`;
+const { EXPO_PUBLIC_BACKEND_URL: BASE_URL, EXPO_PUBLIC_BACKEND_PORT: PORT } =
+  process.env;
+export const ENDPOINT = PORT ? `${BASE_URL}:${PORT}` : `${BASE_URL}`;
 export const connect = async (path: string = "") => {
   const token = await getData("token");
   const socket = io(`${ENDPOINT}/${path}`, {
@@ -11,46 +13,66 @@ export const connect = async (path: string = "") => {
   });
   return socket;
 };
+type EventsMapping = {
+  booking: {
+    subcribe:
+      | "current"
+      | "current-status"
+      | "current-driver"
+      | "current-driver-location";
 
-export type SocketNameSpace = "booking";
-export type BookingEvent =
-  | "current"
-  | "current-status"
-  | "current-driver"
-  | "current-driver-location";
-export type SocketEvent = `${SocketNameSpace}/${BookingEvent}`;
-let booking: Socket | undefined;
+    emit: never;
+  };
+  chat: {
+    subcribe: "new-chat";
+    emit: "new-chat";
+  };
+};
+export type SocketNameSpace = keyof EventsMapping;
+export type SocketSubcribeEvent<T = SocketNameSpace> = T extends SocketNameSpace
+  ? `${T}/${EventsMapping[T]["subcribe"]}`
+  : never;
 
+export type SocketEmitEvent<T = SocketNameSpace> = T extends SocketNameSpace
+  ? `${T}/${EventsMapping[T]["emit"]}`
+  : never;
+const sockets: Record<SocketNameSpace, Socket | undefined> = {
+  booking: undefined,
+  chat: undefined,
+};
 export const createConnect = async () => {
-  booking = await connect("booking");
+  sockets.booking = await connect("booking");
+  sockets.chat = await connect("chat");
   console.log("Connected to all namespaces");
 };
 export const disconnect = () => {
-  if (!booking) return;
-  booking.disconnect();
+  const { booking, chat } = sockets;
+  if (booking) booking.disconnect();
+  if (chat) chat.disconnect();
   console.log("Disconnected to all namespaces");
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const subcribe = (event: SocketEvent, cb: (...data: any[]) => void) => {
-  if (!booking) return () => 0;
-  const [namespace, eventName] = event.split("/") as [
-    SocketNameSpace,
-    BookingEvent,
-  ];
+export const subcribe = <D = unknown>(
+  event: SocketSubcribeEvent,
+  cb: (data: D) => void,
+) => {
+  const [namespace, eventName] = event.split("/") as [SocketNameSpace, string];
+  const socket = sockets[namespace];
+  if (!socket) return () => 0;
+  socket.on(eventName, cb);
   console.log("Subcribe: ", event);
-  let unsubcribe: () => void;
-  switch (namespace) {
-    case "booking":
-      booking.on(eventName, cb);
-      unsubcribe = () => booking?.off(eventName, cb);
-      break;
-    default:
-      unsubcribe = () => 0;
-      break;
-  }
   return () => {
-    unsubcribe();
+    socket.off(eventName, cb);
     console.log("Unsubcribe: ", event);
   };
+};
+export const emit = <T = unknown, D = unknown>(
+  event: SocketEmitEvent,
+  payload: T,
+  cb: (data: D) => void = () => 0,
+) => {
+  const [namespace, eventName] = event.split("/") as [SocketNameSpace, string];
+  const socket = sockets[namespace];
+  if (!socket) return;
+  socket.emit(eventName, payload, cb);
 };

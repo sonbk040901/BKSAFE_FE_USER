@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { Avatar, Button, Dialog, Text } from "@rneui/themed";
 import React, { type FC } from "react";
 import { Linking, View } from "react-native";
@@ -5,7 +6,6 @@ import { Rating } from "react-native-ratings";
 import { COLOR } from "../../constants/color";
 import { useAppDispatch, useAppSelector } from "../../states";
 import { patchDriverId, selectDriver } from "../../states/slice/driver";
-import { useNavigation } from "@react-navigation/native";
 import { RootNavigationProp } from "../../types/navigation";
 
 interface DriverDetailModalProps {}
@@ -21,7 +21,8 @@ const DriverDetailModal: FC<DriverDetailModalProps> = () => {
   };
   const handleNavigateChat = () => {
     dispatch(patchDriverId());
-    navigation.push("DetailChat", { id: "1" });
+    if (!info) return;
+    navigation.push("DetailChat", { driverId: info?.id });
   };
   return (
     <Dialog

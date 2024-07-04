@@ -1,14 +1,17 @@
 import { Button, Icon } from "@rneui/themed";
-import React, { useState, type FC } from "react";
+import React, { type FC } from "react";
 import { Image, Text, TextInput, View } from "react-native";
 import {
   GiftedChat,
   IMessage,
   InputToolbar,
   Send,
+  User,
 } from "react-native-gifted-chat";
-import { Driver } from "../api";
+import { Account, chatApi } from "../api";
+import { useFetch } from "../api/hook";
 import { COLOR } from "../constants/color";
+import useInitApp from "../hook/useInitApp";
 import { DetailChatRouteProp, RootNavigationProp } from "../types/navigation";
 
 interface DetailChatProps {
@@ -17,40 +20,21 @@ interface DetailChatProps {
 }
 
 const DetailChat: FC<DetailChatProps> = (props) => {
-  const { navigation } = props;
-  const [driver] = useState<Driver>({
-    id: 1,
-    createdAt: "2021-10-10T10:10:10Z",
-    updatedAt: "2021-10-10T10:10:10",
-    fullName: "Nguyễn Văn A",
-    email: "nv.A@gmail.com",
-    phone: "0123456789",
-    address: "Hà Nội",
-    avatar:
-      "https://scontent.fhan14-2.fna.fbcdn.net/v/t39.30808-6/283416193_1186258168615880_4061551989491517514_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGzJ43Rph5pIA75SeyEJ2bkUyfKO-Z6bclTJ8o75nptyftB9-zgpts4QZ5kN844SVBVrW11e6lkl_DD2_C0xFXJ&_nc_ohc=XQyYJl2E2AQQ7kNvgFA-WVw&_nc_ht=scontent.fhan14-2.fna&oh=00_AYCW_2E9tRyH71ywUUb-v8toNNcbAdzp40Z39kzb5PPxLw&oe=6685F444",
-    birthday: "2000-10-10",
-    gender: "FEMALE",
-    location: {
-      address: "Hà Nội",
-      latitude: 21.028511,
-      longitude: 105.804817,
-    },
-    rating: 4.5,
+  const { navigation, route } = props;
+  const { driverId } = route.params;
+  const { data: user } = useInitApp();
+  const { data } = useFetch({
+    fetchFn: () => chatApi.getChatDetail(driverId),
   });
-  const [messages, setMessages] = useState<IMessage[]>([
-    {
-      _id: 1,
-      createdAt: new Date(),
-      text: "Hello",
-      user: { _id: 1, name: "React Native", avatar: driver.avatar },
-    },
-    {
-      _id: 2,
-      createdAt: new Date(),
-      text: "Hello",
-      user: { _id: 2, name: "React Native", avatar: driver.avatar },
-    },
-  ]);
+  const driver = data?.driver;
+  const messages = mappingChat(data, user);
+  if (!driver || !user) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
   return (
     <View style={{ backgroundColor: "white", flex: 1, width: "100%" }}>
       <View
@@ -98,7 +82,7 @@ const DetailChat: FC<DetailChatProps> = (props) => {
         placeholder="Nhập tin nhắn..."
         showUserAvatar={false}
         showAvatarForEveryMessage={false}
-        user={{ _id: 2, name: "React Native", avatar: driver.avatar }}
+        user={mappingAcc(user)}
         renderSend={(props) => {
           return (
             <Send {...props}>
@@ -121,7 +105,7 @@ const DetailChat: FC<DetailChatProps> = (props) => {
           );
         }}
         onSend={(newMessages) => {
-          setMessages([...newMessages, ...messages]);
+          // setMessages([...newMessages, ...messages]);
         }}
         renderFooter={() => <View style={{ height: 30 }}></View>}
         renderInputToolbar={(props) => {
@@ -160,3 +144,30 @@ const DetailChat: FC<DetailChatProps> = (props) => {
 };
 
 export default DetailChat;
+
+const mappingChat = (
+  res: Awaited<ReturnType<typeof chatApi.getChatDetail>> | null,
+  user: Account | null,
+): IMessage[] => {
+  if (!res || !user) {
+    return [];
+  }
+  const { chats, driver } = res;
+  return chats.map(
+    (chat) =>
+      ({
+        _id: chat.id,
+        text: chat.message,
+        createdAt: new Date(chat.createdAt),
+        user: mappingAcc(chat.isDriver ? driver : user),
+      } as IMessage),
+  );
+};
+
+const mappingAcc = (acc: Account): User => {
+  return {
+    _id: acc.id,
+    name: acc.fullName,
+    avatar: acc.avatar ?? undefined,
+  };
+};

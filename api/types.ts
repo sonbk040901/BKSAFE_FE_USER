@@ -95,4 +95,5 @@ export interface Chat {
   driverId: number;
   user: User;
   driver: Driver;
+  isDriver: boolean;
 }
