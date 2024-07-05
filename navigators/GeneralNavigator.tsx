@@ -8,6 +8,7 @@ import { RootNavigationParamList } from "../types/navigation";
 import AppNavigator from "./AppNavigator";
 import AuthNavigator from "./AuthNavigator";
 import DetailChat from "../screens/DetailChat";
+import HistoryDetail from "../screens/HistoryDetail";
 
 const Stack = createStackNavigator<RootNavigationParamList>();
 const Navigator = Stack.Navigator;
@@ -98,6 +99,37 @@ export default function GeneralNavigator() {
           // headerShown: false,
           // cardStyle: { backgroundColor: "transparent" },
         }}
+      />
+      <Screen
+        name="HistoryDetail"
+        component={HistoryDetail}
+        // options={{
+        //   transitionSpec: {
+        //     open: { animation: "timing", config: { duration: 300 } },
+        //     close: {
+        //       animation: "timing",
+        //       config: { duration: 300 },
+        //     },
+        //   },
+        //   cardStyleInterpolator: ({ current, layouts }) => {
+        //     return {
+        //       cardStyle: {
+        //         transform: [
+        //           {
+        //             translateX: current.progress.interpolate({
+        //               inputRange: [0, 1],
+        //               outputRange: [layouts.screen.width, 0],
+        //             }),
+        //           },
+        //         ],
+        //         opacity: current.progress,
+        //       },
+        //     };
+        //   },
+        //   gestureEnabled: true,
+        //   // headerShown: false,
+        //   // cardStyle: { backgroundColor: "transparent" },
+        // }}
       />
     </Navigator>
   );

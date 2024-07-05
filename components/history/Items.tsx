@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { Booking } from "../../api";
+import { RootNavigationProp } from "../../types/navigation";
 import Item from "./Item2";
 
 interface ItemsProps {
@@ -9,11 +10,11 @@ interface ItemsProps {
   loading?: boolean;
   onSelected?: (item: Booking) => void;
   onRequestRefresh: () => void;
+  navigation: RootNavigationProp;
 }
 
 const Items = (props: ItemsProps) => {
-  const { data, onRequestRefresh, loading = true } = props;
-
+  const { data, onRequestRefresh, loading = true, navigation } = props;
   return (
     <View style={styles.container}>
       <FlatList
@@ -25,16 +26,14 @@ const Items = (props: ItemsProps) => {
           />
         }
         style={{ width: "100%" }}
-        contentContainerStyle={{ gap: 5 }}
+        contentContainerStyle={{ gap: 6 }}
         data={data}
         renderItem={({ item }) => (
           <Item
             booking={item}
-            // onPress={() => {
-            //   if (onSelected) {
-            //     onSelected(data.item);
-            //   }
-            // }}
+            onPress={() => {
+              navigation.push("HistoryDetail", { bookingId: item.id });
+            }}
           />
         )}
         keyExtractor={(item) => item.id.toString()}

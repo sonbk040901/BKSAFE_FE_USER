@@ -8,12 +8,12 @@ import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
 import Items from "../../components/history/Items";
 import Statistic from "../../components/history/Statistic";
-import type { AuthNavigationProp } from "../../types/navigation";
+import type { RootNavigationProp } from "../../types/navigation";
 
 interface HistoryProps {
-  navigation: AuthNavigationProp;
+  navigation: RootNavigationProp;
 }
-const History = ({}: HistoryProps) => {
+const History = ({ navigation }: HistoryProps) => {
   const [value, setValue] = useState(dayjs());
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,6 +42,7 @@ const History = ({}: HistoryProps) => {
           <Items
             loading={isLoading}
             data={bookings}
+            navigation={navigation}
             onRequestRefresh={refetch}
           />
         </Card>

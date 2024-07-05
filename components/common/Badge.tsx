@@ -25,8 +25,9 @@ const Badge = (props: BadgeProps) => {
         style={{
           color: style.color,
           fontWeight: "500",
-          paddingHorizontal: 5,
-          paddingVertical: 2,
+          paddingHorizontal: 4,
+          paddingVertical: 1,
+          fontSize: 12,
         }}
       >
         {value}
