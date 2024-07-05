@@ -1,31 +1,46 @@
-import { Avatar } from "@rneui/themed";
+import { Avatar, Icon } from "@rneui/themed";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
 import { COLOR } from "../../constants/color";
-import Card from "../Card";
 import { useAppSelector } from "../../states";
 import { selectProfile } from "../../states/slice/profile";
+import Card from "../Card";
 
 const CommonInfo = () => {
-  const { avatar, fullName, email } = useAppSelector(selectProfile);
+  const { avatar, fullName, phone } = useAppSelector(selectProfile);
   return (
     <Card style={styles.container}>
-      <Avatar
-        size={50}
-        source={avatar ?? require("../../assets/images/avatar.png")}
-        avatarStyle={styles.avatar}
-      />
+      <View>
+        <Avatar
+          size={50}
+          source={
+            avatar ? { uri: avatar } : require("../../assets/images/avatar.png")
+          }
+          avatarStyle={styles.avatar}
+        />
+        <View
+          style={{
+            position: "absolute",
+            bottom: -5,
+            right: -5,
+            backgroundColor: COLOR.primary,
+            padding: 3,
+            borderRadius: 50,
+          }}
+        >
+          <Icon size={12} name="edit" color={COLOR.white} />
+        </View>
+      </View>
       <View style={styles.info}>
         <Text style={styles.name}>{fullName}</Text>
-        <Text style={styles.email}>{email}</Text>
+        <Text style={styles.email}>{phone}</Text>
       </View>
-      <RectButton
+      {/* <RectButton
         style={styles.button}
         rippleColor="#b6b6b64f"
       >
         <Text style={{ color: COLOR.primary, fontWeight: "500" }}>Sửa</Text>
-      </RectButton>
+      </RectButton> */}
     </Card>
   );
 };
@@ -37,7 +52,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: 8,
   },
   avatar: {
     resizeMode: "contain",

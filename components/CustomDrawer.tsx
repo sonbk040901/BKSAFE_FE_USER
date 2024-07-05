@@ -6,6 +6,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { authApi } from "../api";
 import { COLOR } from "../constants/color";
 import { useInitAppContext } from "../hook/useInitApp";
+import { useAppSelector } from "../states";
+import { selectProfile } from "../states/slice/profile";
 import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
 import { mappingRouteName } from "../utils/route";
 import CustomDrawerItem from "./CustomDrawerItem";
@@ -24,7 +26,8 @@ type Props = {
   state: DrawerNavigationState<AppNavigationParamList>;
 };
 const CustomDrawer = ({ navigation, state }: Props) => {
-  const { refetch, data } = useInitAppContext();
+  const { refetch } = useInitAppContext();
+  const { avatar, fullName, phone } = useAppSelector(selectProfile);
   const handleLogout = () => {
     authApi.logout();
     refetch();
@@ -45,20 +48,13 @@ const CustomDrawer = ({ navigation, state }: Props) => {
           <Avatar
             size={50}
             source={
-              data?.avatar
-                ? { uri: data.avatar }
-                : require("../assets/images/avatar.png")
+              avatar ? { uri: avatar } : require("../assets/images/avatar.png")
             }
-            avatarStyle={{
-              resizeMode: "contain",
-              width: 50,
-              height: 50,
-            }}
             containerStyle={styles.avatar}
           />
           <View style={styles.info}>
-            <Text style={styles.fullName}>{data?.fullName}</Text>
-            <Text style={styles.email}>{data?.email}</Text>
+            <Text style={styles.fullName}>{fullName}</Text>
+            <Text style={styles.email}>{phone}</Text>
           </View>
         </View>
       </View>
