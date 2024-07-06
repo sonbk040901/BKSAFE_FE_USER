@@ -30,7 +30,7 @@ const Chat: FC<ChatProps> = ({ navigation }) => {
       onPress={() => navigation.push("DetailChat", { driverId: item.driverId })}
     >
       <Image
-        src={item.driver.avatar}
+        src={item.driver.avatar ?? undefined}
         style={{ width: 60, height: 60, borderRadius: 30, marginRight: 10 }}
       />
       <View
@@ -64,7 +64,7 @@ const Chat: FC<ChatProps> = ({ navigation }) => {
             {!item.isDriver && <Text style={{ fontWeight: "600" }}>Bạn: </Text>}
             {item.message}
           </Text>
-          <View
+          {/* <View
             style={{
               width: 20,
               height: 20,
@@ -77,7 +77,7 @@ const Chat: FC<ChatProps> = ({ navigation }) => {
             <Text style={{ color: "white", fontWeight: "bold", fontSize: 13 }}>
               5
             </Text>
-          </View>
+          </View> */}
         </View>
       </View>
     </TouchableOpacity>

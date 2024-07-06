@@ -15,10 +15,10 @@ interface BookingState
   id?: number;
   distance?: number;
   notes: number[];
-  locations: Pick<
+  locations: (Pick<
     Booking["locations"][number],
     "address" | "latitude" | "longitude"
-  >[];
+  > & { id?: number })[];
   status?: Booking["status"];
   price?: number;
 }

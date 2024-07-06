@@ -81,7 +81,8 @@ export interface Noti {
   id: number;
   title: string;
   content: string;
-  image?: string;
+  image: string;
+  type: "personal" | "system";
   createdAt: string;
   updatedAt: string;
 }

@@ -51,34 +51,6 @@ const Notification: FC<NotificationProps> = ({ navigation }) => {
           Thông báo
         </Text>
       </View>
-      {/* <View
-        style={{
-          // height: 50,
-          // backgroundColor: COLOR.primaryBackground,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingVertical: 10,
-          gap: 10,
-          flexDirection: "row",
-        }}
-      >
-        <Button
-          size="sm"
-          buttonStyle={{ width: 120 }}
-          type={tab ? "outline" : "solid"}
-          onPress={() => setTab(0)}
-        >
-          Cá nhân
-        </Button>
-        <Button
-          size="sm"
-          buttonStyle={{ width: 120 }}
-          type={tab ? "solid" : "outline"}
-          onPress={() => setTab(1)}
-        >
-          Hệ thống
-        </Button>
-      </View> */}
       <PersonalNotis />
     </View>
   );

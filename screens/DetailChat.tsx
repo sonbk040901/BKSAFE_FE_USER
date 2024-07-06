@@ -8,7 +8,7 @@ import {
   Send,
   User,
 } from "react-native-gifted-chat";
-import { Account, chatApi } from "../api";
+import { Account, Chat, chatApi } from "../api";
 import { useFetch } from "../api/hook";
 import { COLOR } from "../constants/color";
 import { useInitAppContext } from "../hook/useInitApp";
@@ -30,8 +30,10 @@ const DetailChat: FC<DetailChatProps> = (props) => {
   const driver = data?.driver;
   const messages = mappingChat(data, user).reverse();
   useEffect(() => {
-    return subcribe("chat/new-chat", refetch);
-  }, [refetch]);
+    return subcribe("chat/new-chat", (chat: Chat) => {
+      if (chat.driverId === driverId) refetch();
+    });
+  }, [driverId, refetch]);
   if (!driver || !user) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
