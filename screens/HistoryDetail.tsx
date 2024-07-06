@@ -4,15 +4,18 @@ import { Text, View } from "react-native";
 import { bookingApi } from "../api";
 import { useFetch } from "../api/hook";
 import Card from "../components/Card";
+import Badge from "../components/common/Badge";
+import PositionList from "../components/history/PositionList";
 import DriverInfo from "../components/home/DriverInfo";
 import { COLOR } from "../constants/color";
-import { RootNavigationProp } from "../types/navigation";
-import PositionList from "../components/history/PositionList";
+import {
+  DetailHistoryRouteProp,
+  RootNavigationProp,
+} from "../types/navigation";
 import timeDiff from "../utils/timeDiff";
-import Badge from "../components/common/Badge";
 interface HistoryDetailProps {
   navigation: RootNavigationProp;
-  route: { params: { bookingId: number } };
+  route: DetailHistoryRouteProp;
 }
 
 const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {

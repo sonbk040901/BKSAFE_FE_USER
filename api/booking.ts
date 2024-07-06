@@ -1,4 +1,3 @@
-import buildUrl from "../utils/searchParam";
 import instance from "./axios";
 import {
   Booking,
@@ -21,6 +20,7 @@ export interface BookingDTO {
 }
 export interface FindAllBookingDTO extends PagingAndSortDto {
   status?: BookingStatus;
+  time?: string;
 }
 
 export interface CreateRatingDTO {
@@ -36,8 +36,9 @@ export interface RecentsBookingResponse {
 
 export const getAll = async (findAll: Type<FindAllBookingDTO>) => {
   const path = "bookings";
-  const url = buildUrl(path, findAll);
-  const res = await instance.get<PagingAndSortResponse<Booking>>(url);
+  const res = await instance.get<PagingAndSortResponse<Booking>>(path, {
+    params: findAll,
+  });
   return res.data;
 };
 export const getOne = async (id: number) => {

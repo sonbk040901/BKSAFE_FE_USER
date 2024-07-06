@@ -41,7 +41,7 @@ const Item: FC<ItemProps> = (props) => {
           paddingRight: 5,
         }}
       >
-        {dayjs(createdAt).format("hh:mm")}
+        {dayjs(createdAt).format("hh:mm DD/MM")}
       </Text>
       <View
         style={{

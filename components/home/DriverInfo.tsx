@@ -38,11 +38,6 @@ const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
         >
           <Avatar
             size={50}
-            avatarStyle={{
-              resizeMode: "contain",
-              width: 50,
-              height: 50,
-            }}
             rounded
             source={
               driverProps.avatar ? { uri: driverProps.avatar } : IMAGE.avatar
