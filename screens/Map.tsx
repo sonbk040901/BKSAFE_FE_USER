@@ -108,15 +108,17 @@ const Map = ({ navigation }: MapProps) => {
     };
   }, [dispatch, driver]);
   useEffect(() => {
+    if (!currentLocation) return;
+    if (locations.length) return;
     const sto = setTimeout(() => {
       showAlert(
         "Có lỗi xảy ra",
         "Api key hết hạn, ứng dụng quá cùi!\nVui lòng liên hệ admin để cập nhật api key mới!",
       );
       navigation.goBack();
-    }, 7000);
+    }, 5000);
     return () => clearTimeout(sto);
-  }, [navigation]);
+  }, [navigation, currentLocation, locations.length]);
   useEffect(() => {
     if (status === "TIMEOUT") {
       showAlert("Không tìm thấy", "Không tìm thấy tài xế phù hợp!");

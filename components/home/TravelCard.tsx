@@ -1,23 +1,21 @@
+import { Button, Divider, Icon, Image } from "@rneui/themed";
 import React, { useEffect, useRef } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Card from "../Card";
-import { Avatar, Button, Divider, Icon, Image, Skeleton } from "@rneui/themed";
-import { COLOR } from "../../constants/color";
+import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
-import { Booking, BookingStatus, Driver } from "../../api";
 import MapViewDirections from "react-native-maps-directions";
+import { Booking, BookingStatus } from "../../api";
 import { getApiKey } from "../../api/ggmap";
-import { useAppDispatch } from "../../states";
-import { patchDriverInfo } from "../../states/slice/driver";
+import { COLOR } from "../../constants/color";
 import { IMAGE } from "../../constants/image";
+import Card from "../Card";
+import DriverInfo from "./DriverInfo";
 type CardTravelProps = {
   title: string;
   data: Nullable<Booking>;
   viewOnly?: boolean;
   onPress?: () => void;
 };
-type DriverProps = Driver;
 const statusMapping: Record<BookingStatus | "none", string> = {
   none: "Thuê tài xế?",
   PENDING: "Đang tìm tài xế phù hợp...",
@@ -200,97 +198,6 @@ const MiniMap = ({ booking }: { booking: Nullable<Booking> }) => {
           );
         })}
       </MapView>
-    </View>
-  );
-};
-const DriverInfo = ({ driverProps }: { driverProps?: DriverProps }) => {
-  const dispatch = useAppDispatch();
-  const { gender } = driverProps || {};
-  const isSkeleton = !driverProps;
-  const handleSelectDriver = () => {
-    dispatch(patchDriverInfo(driverProps));
-  };
-  return (
-    <View>
-      {isSkeleton ? (
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <Skeleton
-            circle
-            width={50}
-            height={50}
-            style={{ opacity: 0.3 }}
-          />
-          <Skeleton
-            height={50}
-            style={{ borderRadius: 7, opacity: 0.3, flex: 1 }}
-          />
-        </View>
-      ) : (
-        <TouchableOpacity
-          style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-          onPress={handleSelectDriver}
-        >
-          <Avatar
-            size={50}
-            avatarStyle={{
-              resizeMode: "contain",
-              width: 50,
-              height: 50,
-            }}
-            rounded
-            source={
-              driverProps.avatar ? { uri: driverProps.avatar } : IMAGE.avatar
-            }
-          />
-          <View style={{ justifyContent: "center", flex: 1 }}>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
-            >
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                {driverProps.fullName}
-              </Text>
-              {gender === "MALE" ? (
-                <Icon
-                  name="male"
-                  size={19}
-                  color={COLOR.primary}
-                />
-              ) : gender === "FEMALE" ? (
-                <Icon
-                  name="female"
-                  size={19}
-                  color="hotpink"
-                />
-              ) : null}
-            </View>
-            <View
-              style={{ flexDirection: "row", gap: 4, alignItems: "baseline" }}
-            >
-              <Icon
-                name="star"
-                type="feather"
-                size={16}
-                color={COLOR.warning}
-              />
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "500",
-                  color: COLOR.warning,
-                }}
-              >
-                {+driverProps.rating.toFixed(2)}
-              </Text>
-            </View>
-          </View>
-          <Icon
-            name="more-vertical"
-            type="feather"
-            size={20}
-            color={COLOR.secondary}
-          />
-        </TouchableOpacity>
-      )}
     </View>
   );
 };

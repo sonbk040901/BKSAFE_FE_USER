@@ -1,13 +1,13 @@
 import { DrawerNavigationState } from "@react-navigation/native";
 import { Avatar, Button, Icon } from "@rneui/themed";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { authApi } from "../api";
 import { COLOR } from "../constants/color";
 import { useInitAppContext } from "../hook/useInitApp";
-import { useAppSelector } from "../states";
-import { selectProfile } from "../states/slice/profile";
+import { useAppDispatch, useAppSelector } from "../states";
+import { getProfile, selectProfile } from "../states/slice/profile";
 import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
 import { mappingRouteName } from "../utils/route";
 import CustomDrawerItem from "./CustomDrawerItem";
@@ -28,10 +28,14 @@ type Props = {
 const CustomDrawer = ({ navigation, state }: Props) => {
   const { refetch } = useInitAppContext();
   const { avatar, fullName, phone } = useAppSelector(selectProfile);
-  const handleLogout = () => {
-    authApi.logout();
+  const dispatch = useAppDispatch();
+  const handleLogout = async () => {
+    await authApi.logout();
     refetch();
   };
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
   return (
     <View style={styles.container}>
       <View style={styles.userItem}>

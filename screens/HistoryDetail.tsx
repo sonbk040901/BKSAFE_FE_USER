@@ -1,12 +1,15 @@
-import { Avatar, Button } from "@rneui/themed";
-import React, { type FC } from "react";
+import { Button, Icon } from "@rneui/themed";
+import React, { ComponentProps, type FC } from "react";
 import { Text, View } from "react-native";
+import { bookingApi } from "../api";
+import { useFetch } from "../api/hook";
+import Card from "../components/Card";
+import DriverInfo from "../components/home/DriverInfo";
 import { COLOR } from "../constants/color";
 import { RootNavigationProp } from "../types/navigation";
-import Card from "../components/Card";
-import { useFetch } from "../api/hook";
-import { bookingApi } from "../api";
-import { IMAGE } from "../constants/image";
+import PositionList from "../components/history/PositionList";
+import timeDiff from "../utils/timeDiff";
+import Badge from "../components/common/Badge";
 interface HistoryDetailProps {
   navigation: RootNavigationProp;
   route: { params: { bookingId: number } };
@@ -24,7 +27,136 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
       </View>
     );
   }
-  const { driver } = data;
+  const { driver, locations } = data;
+  const infos: {
+    title: string;
+    value: React.ReactNode;
+    render?: () => JSX.Element;
+  }[] = [
+    {
+      title: "Ghi chú",
+      value: data.note || "Không có",
+    },
+    {
+      title: "Giá tiền",
+      value: data.price.toLocaleString("vi", {
+        style: "currency",
+        currency: "VND",
+      }),
+    },
+    {
+      title: "Thời gian đặt",
+      value: data.createdAt,
+      render: () => {
+        const [diff, formated] = timeDiff(data.createdAt);
+        return (
+          <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+            {formated} ({diff})
+          </Text>
+        );
+      },
+    },
+    {
+      title: "Thời gian bắt đầu",
+      value: data.startTime,
+      render: () => {
+        if (!data.startTime) {
+          return (
+            <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+              Chưa bắt đầu
+            </Text>
+          );
+        }
+        const [diff, formated] = timeDiff(data.startTime);
+        return (
+          <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+            {formated} ({diff})
+          </Text>
+        );
+      },
+    },
+    {
+      title: "Thời gian kết thúc",
+      value: data.endTime,
+      render: () => {
+        if (!data.endTime) {
+          return (
+            <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+              Chưa kết thúc
+            </Text>
+          );
+        }
+        const [diff, formated] = timeDiff(data.endTime);
+        return (
+          <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+            {formated} ({diff})
+          </Text>
+        );
+      },
+    },
+    {
+      title: "Trạng thái",
+      value: data.status,
+      render: () => {
+        const status = data.status;
+        const mapping: Record<
+          typeof status,
+          { label: string; color: ComponentProps<typeof Badge>["type"] }
+        > = {
+          COMPLETED: { label: "Hoàn thành", color: "success" },
+          CANCELLED: { label: "Đã hủy", color: "volcano" },
+          PENDING: { label: "Đang chờ", color: "warning" },
+          TIMEOUT: { label: "Hết hạn", color: "magenta" },
+          DRIVING: { label: "Đang diễn ra", color: "purple" },
+          REJECTED: { label: "Bị từ chối", color: "danger" },
+          ACCEPTED: { label: "Đang tìm tài xế", color: "primary" },
+          RECEIVED: { label: "Tài xế đang đến", color: "cyan" },
+        };
+        const { label: lable, color } = mapping[status];
+        return (
+          <Badge
+            icon=""
+            value={lable}
+            type={color}
+          />
+        );
+      },
+    },
+    {
+      title: "Đánh giá",
+      value: data.rating,
+      render: () => {
+        if (!data.rating) {
+          return (
+            <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+              Chưa đánh giá
+            </Text>
+          );
+        }
+        return (
+          <View
+            style={{ flexDirection: "row", gap: 4, alignItems: "baseline" }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "500",
+                color: COLOR.warning,
+              }}
+            >
+              {+data.rating.toFixed(2)}
+            </Text>
+            <Icon
+              name="star"
+              type="feather"
+              size={16}
+              color={COLOR.warning}
+            />
+          </View>
+        );
+      },
+    },
+  ];
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View
@@ -67,36 +199,70 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
           Chi tiết chuyến đi
         </Text>
       </View>
-      <View style={{ paddingVertical: 10 }}>
+      <View style={{ paddingVertical: 10, gap: 10 }}>
         <Card
           radius={5}
           style={{ width: "95%" }}
         >
-          {driver && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              <Avatar
-                size={50}
-                rounded
-                source={driver.avatar ? { uri: driver.avatar } : IMAGE.avatar}
-              />
-              <Text
+          <Text
+            style={{
+              fontWeight: "500",
+              color: COLOR.secondary,
+              marginBottom: 10,
+            }}
+          >
+            Thông tin tài xế
+          </Text>
+          <DriverInfo driverProps={driver ?? undefined} />
+        </Card>
+        <PositionList
+          style={{
+            width: "95%",
+            gap: 10,
+          }}
+          data={locations.map((l) => l.address)}
+        />
+        <Card
+          radius={5}
+          style={{ width: "95%" }}
+        >
+          <Text
+            style={{
+              fontWeight: "500",
+              color: COLOR.secondary,
+              marginBottom: 10,
+            }}
+          >
+            Thông tin chi tiết
+          </Text>
+          <View style={{ gap: 6 }}>
+            {infos.map(({ title, value, render }) => (
+              <View
+                key={title}
                 style={{
-                  color: COLOR.secondary,
-                  fontSize: 13,
-                  fontWeight: "600",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
               >
-                {driver.fullName}
-              </Text>
-            </View>
-          )}
+                <Text style={{ color: COLOR.secondary, fontWeight: "500" }}>
+                  {title}:
+                </Text>
+                {!render ? (
+                  <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
+                    {value}
+                  </Text>
+                ) : (
+                  render()
+                )}
+              </View>
+            ))}
+          </View>
         </Card>
+        <View style={{ width: "50%", alignSelf: "center" }}>
+          {!data.rating && data.status === "COMPLETED" && (
+            <Button color={"warning"}>Đánh giá tài xế</Button>
+          )}
+        </View>
       </View>
     </View>
   );

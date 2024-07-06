@@ -1,6 +1,6 @@
 import { Avatar, Divider } from "@rneui/themed";
 import dayjs from "dayjs";
-import React, { type FC } from "react";
+import React, { ComponentProps, type FC } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Booking } from "../../api";
 import { COLOR } from "../../constants/color";
@@ -12,9 +12,23 @@ interface ItemProps {
   onPress?: () => void;
 }
 
+const mapping: Record<
+  Booking["status"],
+  { label: string; color: ComponentProps<typeof Badge>["type"] }
+> = {
+  COMPLETED: { label: "Hoàn thành", color: "success" },
+  CANCELLED: { label: "Đã hủy", color: "volcano" },
+  PENDING: { label: "Đang chờ", color: "warning" },
+  TIMEOUT: { label: "Hết hạn", color: "magenta" },
+  DRIVING: { label: "Đang diễn ra", color: "purple" },
+  REJECTED: { label: "Bị từ chối", color: "danger" },
+  ACCEPTED: { label: "Đang tìm tài xế", color: "primary" },
+  RECEIVED: { label: "Tài xế đang đến", color: "cyan" },
+};
 const Item: FC<ItemProps> = (props) => {
   const { booking, onPress } = props;
   const { price, createdAt, driver, status } = booking;
+  const { label, color } = mapping[status];
   return (
     <TouchableOpacity onPress={onPress}>
       <Text
@@ -125,8 +139,8 @@ const Item: FC<ItemProps> = (props) => {
           </Text>
           <Badge
             icon=""
-            value={status === "COMPLETED" ? "Thành công" : "Đã hủy"}
-            type={status === "COMPLETED" ? "success" : "warning"}
+            value={label}
+            type={color}
           />
         </View>
       </View>
