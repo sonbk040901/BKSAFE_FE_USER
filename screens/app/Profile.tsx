@@ -6,8 +6,8 @@ import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
 import DetailInfo from "../../components/profile/DetailInfo";
 import type { AuthNavigationProp } from "../../types/navigation";
-import { updateProfile } from "../../states/slice/profile";
-import { useAppDispatch } from "../../states";
+import { selectProfile, updateProfile } from "../../states/slice/profile";
+import { useAppDispatch, useAppSelector } from "../../states";
 
 interface ProfileProps {
   navigation: AuthNavigationProp;
@@ -24,6 +24,7 @@ const renderScene = SceneMap({
 const Profile = ({}: ProfileProps) => {
   const [tab, setTab] = useState<number>(0);
   const dispatch = useAppDispatch();
+  const { status } = useAppSelector(selectProfile);
   return (
     <AppWrapper>
       <View style={styles.container}>
@@ -63,6 +64,7 @@ const Profile = ({}: ProfileProps) => {
         <Button
           raised
           onPress={() => dispatch(updateProfile())}
+          disabled={status === "loading"}
         >
           Cập nhật
         </Button>
