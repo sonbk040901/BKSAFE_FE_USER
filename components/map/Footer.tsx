@@ -1,7 +1,8 @@
-import { Button, Icon, Text } from "@rneui/themed";
+import { Button, Text } from "@rneui/themed";
 import React, { ComponentProps, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
+import useFindDriverMode from "../../api/hook/useFindDriverMode";
 import { COLOR } from "../../constants/color";
 import { STYLE } from "../../constants/theme";
 import { useAppDispatch, useAppSelector } from "../../states";
@@ -12,14 +13,14 @@ import {
   selectBooking,
 } from "../../states/slice/booking";
 import NotesDialog from "../booking/NotesDialog";
-import useFindDriverMode from "../../api/hook/useFindDriverMode";
+import DriverInfo from "../home/DriverInfo";
 
 interface FooterProps extends ComponentProps<typeof Animated.View> {
   onCancel?: () => void;
 }
 
 function Footer(props: FooterProps) {
-  const { status, price, id, note } = useAppSelector(selectBooking);
+  const { status, price, id, note, driver } = useAppSelector(selectBooking);
   const dispatch = useAppDispatch();
   const [notesAddDialogVisiable, setNotesAddDialogVisiable] = useState(false);
   const { data: autoFind } = useFindDriverMode();
@@ -54,40 +55,43 @@ function Footer(props: FooterProps) {
             "Quản trị viên sẽ liên hệ với bạn sau ít phút"}
         </Text>
       </View>
-      <Button
-        buttonStyle={{
-          backgroundColor: COLOR.primaryBackground,
-          borderBottomWidth: 0.5,
-          flexDirection: "row",
-          paddingVertical: 7,
-          paddingHorizontal: 10,
-          alignItems: "center",
-          gap: 10,
-          borderRadius: 0,
-        }}
-        containerStyle={{
-          width: "100%",
-          borderRadius: 0,
-        }}
-      >
-        <View
-          style={{
-            height: 40,
-            width: 40,
-            backgroundColor: "#a0c0ff",
-            borderRadius: 20,
+      {/* {driver && (
+        <Button
+          buttonStyle={{
+            backgroundColor: COLOR.primaryBackground,
+            borderBottomWidth: 0.5,
+            flexDirection: "row",
+            paddingVertical: 7,
+            paddingHorizontal: 10,
+            alignItems: "center",
+            gap: 10,
+            borderRadius: 0,
           }}
-        ></View>
-        <Text style={{ flex: 1, fontWeight: "bold", fontSize: 18 }}>
-          Tìm tài xế lái xe hơi
-        </Text>
-        <Icon
-          name="more-vertical"
-          type="feather"
-          size={20}
-          color={COLOR.secondary}
-        />
-      </Button>
+          containerStyle={{
+            width: "100%",
+            borderRadius: 0,
+          }}
+        >
+          <View
+            style={{
+              height: 40,
+              width: 40,
+              backgroundColor: "#a0c0ff",
+              borderRadius: 20,
+            }}
+          ></View>
+          <Text style={{ flex: 1, fontWeight: "bold", fontSize: 18 }}>
+            Tìm tài xế lái xe hơi
+          </Text>
+          <Icon
+            name="more-vertical"
+            type="feather"
+            size={20}
+            color={COLOR.secondary}
+          />
+        </Button>
+      )} */}
+      <DriverInfo driverProps={driver ?? undefined} />
       <View style={styles.tool}>
         <Button
           radius="lg"
@@ -124,7 +128,11 @@ function Footer(props: FooterProps) {
       <View style={{ width: "90%", flexDirection: "row", gap: 10 }}>
         {status && isVisible && (
           <Button
-            containerStyle={{ borderRadius: 20 }}
+            containerStyle={{
+              borderRadius: 20,
+              borderWidth: 0.3,
+              borderColor: COLOR.warning,
+            }}
             buttonStyle={{ backgroundColor: COLOR.warningBackground }}
             titleStyle={{
               fontSize: 16,
@@ -194,28 +202,7 @@ function Footer(props: FooterProps) {
     </Animated.View>
   );
 }
-// interface PendingFooterProps extends ComponentProps<typeof Animated.View> {
-//   onCancel?: () => void;
-// }
 
-// function PendingFooter(props: PendingFooterProps) {
-//   const { onCancel } = props;
-//   return (
-//     <Animated.View {...props}>
-//       <Button
-//         title="Chi tiết"
-//         radius="md"
-//         buttonStyle={{
-//           backgroundColor: COLOR.secondaryBackground,
-//           paddingHorizontal: 20,
-//         }}
-//         titleStyle={{ color: "white" }}
-//         onPress={onCancel}
-//       />
-//       <Button></Button>
-//     </Animated.View>
-//   );
-// }
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
