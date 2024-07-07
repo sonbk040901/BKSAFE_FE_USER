@@ -15,11 +15,7 @@ export const connect = async (path: string = "") => {
 };
 type EventsMapping = {
   booking: {
-    subcribe:
-      | "current"
-      | "current-status"
-      | "current-driver"
-      | "current-driver-location";
+    subcribe: "current-status" | "current-driver" | "current-driver-location";
 
     emit: never;
   };

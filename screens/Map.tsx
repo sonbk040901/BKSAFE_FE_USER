@@ -96,9 +96,10 @@ const Map = ({ navigation }: MapProps) => {
     );
     const unsubcribe2 = subcribe(
       "booking/current-driver-location",
-      (location: Driver["location"]) => {
+      (location: Driver["location"] & { nextLocationId: number }) => {
         if (!driver) return;
         dispatch(patchDriver({ location }));
+        dispatch(patchBooking({ nextLocationId: location.nextLocationId }));
       },
     );
     return () => {

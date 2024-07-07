@@ -1,7 +1,7 @@
 import { Button, Text } from "@rneui/themed";
 import React, { FC, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import { BookingStatus } from "../../api";
+import { BookingStatus, Driver } from "../../api";
 import { useRecentsBooking } from "../../api/hook";
 import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
@@ -13,7 +13,7 @@ import { COLOR } from "../../constants/color";
 import { useInitAppContext } from "../../hook/useInitApp";
 import { subcribe } from "../../socket";
 import { useAppDispatch } from "../../states";
-import { patchBooking } from "../../states/slice/booking";
+import { patchBooking, patchDriver } from "../../states/slice/booking";
 import { updateRating } from "../../states/slice/rating";
 import type { AppNavigationProp } from "../../types/navigation";
 import { showNativeAlert } from "../../utils/alert";
@@ -30,13 +30,28 @@ const Home: FC<HomeProps> = ({ navigation }) => {
   }, [navigation, refetch]);
   useEffect(() => {
     if (!data?.current) return;
-    return subcribe("booking/current-status", (status: BookingStatus) => {
-      refetch();
-      if (status === "COMPLETED") {
-        showNativeAlert("Chuyến đi đã kết thúc");
-        dispatch(updateRating({ bookingId: data?.current?.id }));
-      }
-    });
+    const unsub1 = subcribe(
+      "booking/current-status",
+      (status: BookingStatus) => {
+        refetch();
+        if (status === "COMPLETED") {
+          showNativeAlert("Chuyến đi đã kết thúc");
+          dispatch(updateRating({ bookingId: data?.current?.id }));
+        }
+      },
+    );
+    const unsub2 = subcribe(
+      "booking/current-driver-location",
+      (location: Driver["location"] & { nextLocationId: number }) => {
+        if (data.current?.nextLocationId !== location.nextLocationId) refetch();
+        dispatch(patchDriver({ location }));
+        dispatch(patchBooking({ nextLocationId: location.nextLocationId }));
+      },
+    );
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [data, dispatch, refetch]);
   const handleSelectBooking = () => {
     dispatch(patchBooking(data?.current ?? undefined));
