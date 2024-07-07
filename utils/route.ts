@@ -5,7 +5,15 @@ const routeName: Record<keyof AppNavigationParamList, string> = {
   History: "Lịch sử chuyến đi",
   Profile: "Thông tin cá nhân",
 };
-
-export const mappingRouteName = (name: keyof AppNavigationParamList) => {
-  return routeName[name];
+const routeNameDrawer: Record<keyof AppNavigationParamList, string> = {
+  Home: "Trang chủ",
+  Setting: "Cài đặt",
+  History: "Lịch sử chuyến đi",
+  Profile: "Thông tin cá nhân",
+};
+export const mappingRouteName = (
+  name: keyof AppNavigationParamList,
+  isDrawerItem = false,
+) => {
+  return isDrawerItem ? routeNameDrawer[name] : routeName[name];
 };

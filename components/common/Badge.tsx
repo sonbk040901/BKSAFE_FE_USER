@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { COLOR } from "../../constants/color";
 
 interface BadgeProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   type?:
     | "success"
     | "warning"

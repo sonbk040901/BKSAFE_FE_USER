@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { type RootState } from "../store";
 interface SocketState {
   status: "loading" | "connected" | "disconnected" | "failed";
 }

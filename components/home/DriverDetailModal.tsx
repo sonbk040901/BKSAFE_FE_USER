@@ -47,13 +47,6 @@ const DriverDetailModal: FC<DriverDetailModalProps> = () => {
         >
           <Avatar
             size={120}
-            avatarStyle={{
-              resizeMode: "contain",
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderWidth: 1,
-            }}
             rounded
             source={
               avatar

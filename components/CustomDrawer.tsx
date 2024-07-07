@@ -70,7 +70,7 @@ const CustomDrawer = ({ navigation, state }: Props) => {
               key={route.key}
               focused={focused}
               {...drawerItems[index]}
-              name={mappingRouteName(route.name)}
+              name={mappingRouteName(route.name, true)}
               onPress={() => navigation.navigate(route.name)}
             />
           );

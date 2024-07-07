@@ -1,5 +1,5 @@
 import { Button, Icon } from "@rneui/themed";
-import React, { ComponentProps, type FC } from "react";
+import React, { ComponentProps, useEffect, type FC } from "react";
 import { Text, View } from "react-native";
 import { bookingApi } from "../api";
 import { useFetch } from "../api/hook";
@@ -8,6 +8,8 @@ import Badge from "../components/common/Badge";
 import PositionList from "../components/history/PositionList";
 import DriverInfo from "../components/home/DriverInfo";
 import { COLOR } from "../constants/color";
+import { useAppDispatch, useAppSelector } from "../states";
+import { selectRating, updateRating } from "../states/slice/rating";
 import {
   DetailHistoryRouteProp,
   RootNavigationProp,
@@ -20,9 +22,17 @@ interface HistoryDetailProps {
 
 const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
   const { bookingId } = route.params;
-  const { data } = useFetch({
+  const { data, refetch } = useFetch({
     fetchFn: () => bookingApi.getOne(bookingId),
   });
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector(selectRating);
+  useEffect(() => {
+    if (status === "success") {
+      dispatch(updateRating({ bookingId: undefined }));
+      refetch();
+    }
+  }, [dispatch, refetch, status]);
   if (!data) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -51,10 +61,10 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
       title: "Thời gian đặt",
       value: data.createdAt,
       render: () => {
-        const [diff, formated] = timeDiff(data.createdAt);
+        const [, formated] = timeDiff(data.createdAt);
         return (
           <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
-            {formated} ({diff})
+            {formated}
           </Text>
         );
       },
@@ -70,10 +80,10 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
             </Text>
           );
         }
-        const [diff, formated] = timeDiff(data.startTime);
+        const [, formated] = timeDiff(data.startTime);
         return (
           <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
-            {formated} ({diff})
+            {formated}
           </Text>
         );
       },
@@ -89,10 +99,10 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
             </Text>
           );
         }
-        const [diff, formated] = timeDiff(data.endTime);
+        const [, formated] = timeDiff(data.endTime);
         return (
           <Text style={{ color: COLOR.dark, fontWeight: "600" }}>
-            {formated} ({diff})
+            {formated}
           </Text>
         );
       },
@@ -263,7 +273,14 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
         </Card>
         <View style={{ width: "50%", alignSelf: "center" }}>
           {!data.rating && data.status === "COMPLETED" && (
-            <Button color={"warning"}>Đánh giá tài xế</Button>
+            <Button
+              color={"warning"}
+              onPress={() => {
+                dispatch(updateRating({ bookingId: bookingId }));
+              }}
+            >
+              Đánh giá tài xế
+            </Button>
           )}
         </View>
       </View>

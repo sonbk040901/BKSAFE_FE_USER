@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Driver } from "../../api";
-import { RootState } from "../store";
+import { type RootState } from "../store";
 
 interface DriverState {
   id?: number;

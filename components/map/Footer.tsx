@@ -1,6 +1,6 @@
-import { Button, Divider, Text } from "@rneui/themed";
+import { Button, Divider, Icon, Text } from "@rneui/themed";
 import React, { ComponentProps, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { BookingStatus } from "../../api";
 import useFindDriverMode from "../../api/hook/useFindDriverMode";
@@ -39,7 +39,11 @@ function Footer(props: FooterProps) {
   const [notesAddDialogVisiable, setNotesAddDialogVisiable] = useState(false);
   const { data: autoFind } = useFindDriverMode();
   const { style: customStyle, onCancel } = props;
-  const isVisible = !status || status === "PENDING" || status === "ACCEPTED";
+  const isVisible =
+    !status ||
+    status === "PENDING" ||
+    status === "ACCEPTED" ||
+    status === "RECEIVED";
   const disable = !!(!price || status);
 
   const footerTitle = statusMapping[status || "none"];
@@ -72,9 +76,21 @@ function Footer(props: FooterProps) {
             "Quản trị viên sẽ liên hệ với bạn sau ít phút"}
         </Text>
       </View>
-      <View style={{ width: "90%", paddingTop: 5 }}>
-        <DriverInfo driverProps={driver ?? undefined} />
-      </View>
+      {!status && (
+        <TouchableOpacity style={{ position: "absolute", top: -35, right: 10 }}>
+          <Icon
+            name="more-vertical"
+            type="feather"
+            size={25}
+            color={COLOR.secondary}
+          />
+        </TouchableOpacity>
+      )}
+      {driver && (
+        <View style={{ width: "90%", paddingTop: 5 }}>
+          <DriverInfo driverProps={driver ?? undefined} />
+        </View>
+      )}
       <View style={{ width: "100%" }}>
         <Divider />
       </View>
@@ -141,7 +157,7 @@ function Footer(props: FooterProps) {
           <Button
             containerStyle={{
               borderRadius: 20,
-              borderWidth: 0.3,
+              borderWidth: 0.5,
               borderColor: COLOR.warning,
             }}
             buttonStyle={{ backgroundColor: COLOR.warningBackground }}

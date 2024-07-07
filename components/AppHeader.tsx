@@ -1,6 +1,6 @@
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { Icon } from "@rneui/themed";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,12 +8,24 @@ import { COLOR } from "../constants/color";
 import { AppNavigationParamList, AppNavigationProp } from "../types/navigation";
 import { mappingRouteName } from "../utils/route";
 import { RouteProp } from "@react-navigation/native";
+import { subcribe } from "../socket";
+import { Chat } from "../api";
 type AppHeaderProps = DrawerHeaderProps & {
   navigation: AppNavigationProp;
   route: RouteProp<AppNavigationParamList>;
 };
 
 const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const unsub1 = subcribe("chat/new-chat", (chat: Chat) => {
+      if (chat.isDriver) return;
+      setCount((c) => c + 1);
+    });
+    return () => {
+      unsub1();
+    };
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <Text
@@ -98,6 +110,23 @@ const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
               size={25}
               color="white"
             />
+            {count > 0 && (
+              <View
+                style={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  backgroundColor: "red",
+                  borderRadius: 10,
+                  width: 17,
+                  height: 17,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 12 }}>{count}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       )}
