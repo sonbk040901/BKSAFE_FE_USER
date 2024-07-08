@@ -13,9 +13,7 @@ const CommonInfo = () => {
       <View>
         <Avatar
           size={50}
-          source={
-            avatar ? { uri: avatar } : require("../../assets/images/avatar.png")
-          }
+          source={avatar ? { uri: avatar } : undefined}
           avatarStyle={styles.avatar}
         />
         <View
@@ -28,7 +26,11 @@ const CommonInfo = () => {
             borderRadius: 50,
           }}
         >
-          <Icon size={12} name="edit" color={COLOR.white} />
+          <Icon
+            size={12}
+            name="edit"
+            color={COLOR.white}
+          />
         </View>
       </View>
       <View style={styles.info}>

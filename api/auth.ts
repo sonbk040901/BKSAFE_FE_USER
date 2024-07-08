@@ -1,6 +1,6 @@
-import instance from "./axios";
 import * as storage from "../utils/storage";
-import { Account } from "./types";
+import instance from "./axios";
+import { Account, Cccd, Driver, License } from "./types";
 export interface LoginDTO {
   phone: string;
   password: string;
@@ -14,6 +14,13 @@ export interface SignupDTO {
 export interface ActiveDTO {
   phone: string;
   activationCode: string;
+}
+
+export interface DriverRegisterDTO {
+  cccd: Omit<Cccd, "id">;
+  license: Omit<License, "id">;
+  address?: string;
+  birthday?: Date;
 }
 export const login = async (login: LoginDTO) => {
   const path = "auth/login";
@@ -37,5 +44,14 @@ export const logout = async () => {
 export const getProfile = async () => {
   const path = "auth";
   const res = await instance.get<Account>(path);
+  return res.data;
+};
+export const registerDriver = async (dto: DriverRegisterDTO) => {
+  const path = "auth/register/driver";
+  await instance.post(path, dto);
+};
+export const checkRegisterDriver = async () => {
+  const path = "auth/register/driver/check";
+  const res = await instance.get<Driver["registerStatus"] | null>(path);
   return res.data;
 };

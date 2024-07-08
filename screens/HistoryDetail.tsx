@@ -5,6 +5,7 @@ import { bookingApi } from "../api";
 import { useFetch } from "../api/hook";
 import Card from "../components/Card";
 import Badge from "../components/common/Badge";
+import Header from "../components/common/Header";
 import PositionList from "../components/history/PositionList";
 import DriverInfo from "../components/home/DriverInfo";
 import { COLOR } from "../constants/color";
@@ -172,46 +173,10 @@ const HistoryDetail: FC<HistoryDetailProps> = ({ navigation, route }) => {
   ];
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <View
-        style={{
-          height: 100,
-          backgroundColor: COLOR.primaryBackground,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: 40,
-        }}
-      >
-        <View
-          style={{
-            position: "absolute",
-            left: 7,
-            top: 48,
-            height: "100%",
-          }}
-        >
-          <Button
-            icon={{
-              name: "arrow-back-outline",
-              type: "ionicon",
-              color: COLOR.primary,
-              size: 30,
-            }}
-            type="clear"
-            raised
-            onPress={() => navigation.goBack()}
-          />
-        </View>
-        <Text
-          style={{
-            fontWeight: "600",
-            fontSize: 25,
-            color: COLOR.primary,
-            // textTransform: "uppercase",
-          }}
-        >
-          Chi tiết chuyến đi
-        </Text>
-      </View>
+      <Header
+        navigation={navigation}
+        title="Chi tiết chuyến đi"
+      />
       <View style={{ paddingVertical: 10, gap: 10 }}>
         <Card
           radius={5}

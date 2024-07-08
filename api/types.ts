@@ -49,6 +49,7 @@ export interface Driver extends Account {
   birthday: string;
   address: string;
   location: Pick<Location, "address" | "latitude" | "longitude">;
+  registerStatus: "PENDING" | "ACCEPTED" | "REJECTED";
 }
 export interface User extends Account {}
 export type BookingStatus =
@@ -96,4 +97,29 @@ export interface Chat {
   user: User;
   driver: Driver;
   isDriver: boolean;
+}
+
+export interface Cccd {
+  id: number;
+  frontImage: string;
+  backImage: string;
+  fullName: string;
+  number: string;
+  address: string;
+  birthday: string | Date;
+  issueDate: string | Date;
+  expireDate: string | Date;
+}
+
+export interface License {
+  id: number;
+  frontImage: string;
+  backImage: string;
+  number: string;
+  fullName: string;
+  address: string;
+  birthday: string | Date;
+  issueDate: string | Date;
+  expireDate: string | Date;
+  classType: string;
 }

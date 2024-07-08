@@ -10,6 +10,7 @@ export type RootNavigationParamList = {
   DetailChat: { driverId: number };
   Notification: undefined;
   HistoryDetail: { bookingId: number };
+  DriverRegister: undefined;
 };
 export type RootNavigationProp = StackNavigationProp<RootNavigationParamList>;
 export type AppNavigationParamList = {

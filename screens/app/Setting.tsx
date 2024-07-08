@@ -4,6 +4,8 @@ import { FlatList, Text, TouchableOpacity } from "react-native";
 import AppWrapper from "../../components/AppWrapper";
 import Card from "../../components/Card";
 import { AppNavigationProp } from "../../types/navigation";
+import { authApi } from "../../api";
+import { showNativeAlert } from "../../utils/alert";
 
 interface SettingProps {
   navigation: AppNavigationProp;
@@ -12,13 +14,27 @@ interface SettingProps {
 interface SettingItem {
   icon: IconProps;
   title: string;
+  onPress?: () => void;
 }
 
-const Setting = ({}: SettingProps) => {
+const Setting = ({ navigation }: SettingProps) => {
   const items: SettingItem[] = [
     {
       title: "Đăng ký làm tài xế",
       icon: { name: "user-plus", type: "feather" },
+      onPress: () => {
+        authApi.checkRegisterDriver().then((status) => {
+          if (!status || status === "REJECTED") {
+            navigation.push("DriverRegister");
+            return;
+          }
+          showNativeAlert(
+            status === "ACCEPTED"
+              ? "Bạn đã có tài khoản tài xế"
+              : "Đơn đăng ký của bạn đang được xử lý",
+          );
+        });
+      },
     },
   ];
   return (
@@ -36,6 +52,7 @@ const Setting = ({}: SettingProps) => {
                   alignItems: "center",
                   gap: 10,
                 }}
+                onPress={item.onPress}
               >
                 <Icon {...item.icon} />
                 <Text style={{ fontWeight: "500", fontSize: 20, flex: 1 }}>

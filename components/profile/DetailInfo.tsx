@@ -14,8 +14,8 @@ import { STYLE } from "../../constants/theme";
 import { useAppDispatch, useAppSelector } from "../../states";
 import {
   getProfile,
-  selectProfile,
   patchProfile,
+  selectProfile,
 } from "../../states/slice/profile";
 import Card from "../Card";
 import Item from "./Item";
@@ -37,10 +37,9 @@ const DetailInfo = () => {
         <Avatar
           size={200}
           rounded
-          source={
-            avatar ? { uri: avatar } : require("../../assets/images/avatar.png")
-          }
-          containerStyle={STYLE.shadow}
+          source={avatar ? { uri: avatar } : undefined}
+          containerStyle={[STYLE.shadow, { backgroundColor: COLOR.secondary }]}
+          title={avatar ? undefined : fullName[0]}
         />
         <TouchableOpacity
           style={{

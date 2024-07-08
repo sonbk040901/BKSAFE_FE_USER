@@ -51,10 +51,12 @@ const CustomDrawer = ({ navigation, state }: Props) => {
         <View style={styles.userInfo}>
           <Avatar
             size={50}
-            source={
-              avatar ? { uri: avatar } : require("../assets/images/avatar.png")
-            }
-            containerStyle={styles.avatar}
+            source={avatar ? { uri: avatar } : undefined}
+            title={!avatar ? fullName[0] : undefined}
+            containerStyle={[
+              styles.avatar,
+              { backgroundColor: COLOR.secondary },
+            ]}
           />
           <View style={styles.info}>
             <Text style={styles.fullName}>{fullName}</Text>

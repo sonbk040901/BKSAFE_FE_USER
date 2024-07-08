@@ -1,13 +1,13 @@
-import { Button } from "@rneui/themed";
 import dayjs from "dayjs";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, type FC } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { Chat as ChatType, chatApi } from "../api";
 import { useFetch } from "../api/hook";
+import Header from "../components/common/Header";
 import { COLOR } from "../constants/color";
-import { RootNavigationProp } from "../types/navigation";
 import { subcribe } from "../socket";
+import { RootNavigationProp } from "../types/navigation";
 
 interface ChatProps {
   navigation: RootNavigationProp;
@@ -85,46 +85,10 @@ const Chat: FC<ChatProps> = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <StatusBar style="dark" />
-      <View
-        style={{
-          height: 100,
-          backgroundColor: COLOR.primaryBackground,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: 40,
-        }}
-      >
-        <View
-          style={{
-            position: "absolute",
-            left: 7,
-            top: 48,
-            height: "100%",
-          }}
-        >
-          <Button
-            icon={{
-              name: "arrow-back-outline",
-              type: "ionicon",
-              color: COLOR.primary,
-              size: 30,
-            }}
-            type="clear"
-            raised
-            onPress={() => navigation.goBack()}
-          />
-        </View>
-        <Text
-          style={{
-            fontWeight: "600",
-            fontSize: 25,
-            color: COLOR.primary,
-            // textTransform: "uppercase",
-          }}
-        >
-          Danh sách tin nhắn
-        </Text>
-      </View>
+      <Header
+        navigation={navigation}
+        title="Tin nhắn"
+      />
       <FlatList
         refreshing={isLoading}
         onRefresh={refetch}
