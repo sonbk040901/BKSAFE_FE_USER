@@ -36,7 +36,7 @@ const Register = () => {
         <Text
           style={{
             fontWeight: "bold",
-            fontSize: 25,
+            fontSize: 30,
             textAlign: "center",
             paddingVertical: 20,
           }}
