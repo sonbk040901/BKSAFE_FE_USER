@@ -101,6 +101,7 @@ const AppHeader: FC<AppHeaderProps> = ({ navigation, route }) => {
           <TouchableOpacity
             style={{ padding: 15 }}
             onPress={() => {
+              setCount(0);
               navigation.push("Chat");
             }}
           >

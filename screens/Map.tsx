@@ -91,6 +91,10 @@ const Map = ({ navigation }: MapProps) => {
     const unsubcribe1 = subcribe(
       "booking/current-status",
       (status: BookingStatus) => {
+        if (status === "CANCELLED") {
+          dispatch(patchBooking({ status, driver: null, driverId: null }));
+          return;
+        }
         dispatch(patchBooking({ status }));
       },
     );
