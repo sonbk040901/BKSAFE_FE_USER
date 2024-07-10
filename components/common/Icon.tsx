@@ -2,8 +2,7 @@ import React from "react";
 import {
   Image,
   ImageProps,
-  ImageSourcePropType,
-  StyleSheet,
+  ImageSourcePropType
 } from "react-native";
 import { ICON } from "../../constants/image";
 
@@ -11,25 +10,18 @@ type IconSource =
   | { source: ImageSourcePropType; name?: undefined }
   | { name: keyof typeof ICON; source?: undefined };
 
-type IconProps = ImageProps & IconSource;
+type IconProps = ImageProps & IconSource & { size?: number };
 
 const Icon: React.FC<IconProps> = (props) => {
-  const { source, name, style, ...rest } = props;
+  const { source, name, style, size = 24, ...rest } = props;
   const src = source ?? ICON[name];
   return (
     <Image
       source={src}
-      style={[styles.icon, style]}
+      style={[{ height: size, width: size }, style]}
       {...rest}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    width: 24,
-    height: 24,
-  },
-});
 
 export default Icon;

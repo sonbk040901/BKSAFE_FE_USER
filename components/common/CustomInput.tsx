@@ -1,4 +1,9 @@
-import React, { ReactNode, useRef, useState } from "react";
+import React, {
+  ForwardRefRenderFunction,
+  ReactNode,
+  forwardRef,
+  useState,
+} from "react";
 import {
   StyleSheet,
   Text,
@@ -9,38 +14,37 @@ import {
 import { COLOR } from "../../constants/color";
 
 interface CustomInputProps extends TextInputProps {
+  width?: `${number}%` | number;
   label?: string;
   errorText?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({
-  label,
-  errorText,
-  leftIcon,
-  rightIcon,
-  ...rest
-}) => {
-  const inputRef = useRef<TextInput>(null);
+const CustomInput: ForwardRefRenderFunction<TextInput, CustomInputProps> = (
+  props,
+  ref,
+) => {
+  const { label, errorText, leftIcon, rightIcon, width, ...rest } = props;
   const [focussed, setFocussed] = useState(false);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { width }]}>
       {label && <Text style={styles.label}>{label}</Text>}
       <View
         style={[
           styles.inputContainer,
-          focussed ? { borderColor: COLOR.secondaryBackground } : null,
+          focussed ? { borderColor: COLOR.primary } : null,
         ]}
       >
         {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
         <TextInput
-          ref={inputRef}
+          ref={ref}
           style={[
             styles.input,
             leftIcon ? { paddingLeft: 35 } : null,
             rightIcon ? { paddingRight: 35 } : null,
           ]}
+          placeholderTextColor={"#999"}
           {...rest}
           onFocus={(e) => {
             rest.onFocus?.(e);
@@ -72,16 +76,16 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: COLOR.secondary,
+    borderRadius: 7,
     paddingHorizontal: 10,
     paddingVertical: 1,
   },
   input: {
     flex: 1,
-    height: 40,
-    fontSize: 17,
+    height: 45,
+    fontSize: 18,
     color: "#333",
   },
   leftIconContainer: {
@@ -100,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomInput;
+export default forwardRef(CustomInput);

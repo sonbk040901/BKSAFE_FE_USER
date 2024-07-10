@@ -19,4 +19,9 @@ export const ICON = {
   birthday: require("../assets/icons/birthday.png"),
   driversLicense: require("../assets/icons/drivers-license.png"),
   truck: require("../assets/icons/truck.png"),
+  lock: require("../assets/icons/lock.png"),
+  view: require("../assets/icons/view.png"),
+  hidden: require("../assets/icons/hidden.png"),
+  userPhone: require("../assets/icons/user-phone.png"),
+  email: require("../assets/icons/email.png"),
 } satisfies Record<string, unknown>;

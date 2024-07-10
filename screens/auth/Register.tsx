@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Button, Input } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import useRegister from "../../api/hook/useRegister";
 import AuthWrapper from "../../components/AuthWrapper";
+import CustomInput from "../../components/common/CustomInput";
+import Icon from "../../components/common/Icon";
 import { COLOR } from "../../constants/color";
 import type { AuthNavigationProp } from "../../types/navigation";
 
@@ -43,139 +45,103 @@ const Register = () => {
         >
           Đăng ký tài khoản
         </Text>
-        <Input
+        <CustomInput
           ref={phoneRef}
+          leftIcon={
+            <Icon
+              size={28}
+              name="userPhone"
+            />
+          }
+          width="95%"
+          keyboardType="phone-pad"
+          placeholder="Số điện thoại"
+          errorText={getError("phone")}
           onChangeText={(v) => {
             clearError();
             dispatch({ type: "phone", payload: v });
           }}
-          placeholder="Số điện thoại"
-          keyboardType="phone-pad"
-          leftIcon={{
-            name: "phone",
-            type: "font-awesome",
-            // color: COLOR.primary,
-          }}
-          errorMessage={getError("phone")}
-          leftIconContainerStyle={{
-            marginRight: 10,
-          }}
-          inputContainerStyle={{
-            borderRadius: 10,
-            backgroundColor: "white",
-            borderWidth: 0.5,
-            paddingHorizontal: 10,
-            borderColor: COLOR.secondaryBackground,
-          }}
         />
-        <Input
+        <CustomInput
+          leftIcon={
+            <Icon
+              size={28}
+              name="email"
+            />
+          }
+          keyboardType="email-address"
+          width="95%"
+          placeholder="Email"
+          errorText={getError("email")}
           onChangeText={(v) => {
             clearError();
             dispatch({ type: "email", payload: v });
           }}
-          placeholder="Email"
-          keyboardType="email-address"
-          leftIcon={{
-            name: "mail",
-            type: "entypo",
-            // color: COLOR.primary,
-          }}
-          errorMessage={getError("email")}
-          leftIconContainerStyle={{
-            marginRight: 10,
-          }}
-          inputContainerStyle={{
-            borderRadius: 10,
-            backgroundColor: "white",
-            borderWidth: 0.5,
-            paddingHorizontal: 10,
-            borderColor: COLOR.secondaryBackground,
-          }}
         />
-
-        <Input
+        <CustomInput
+          leftIcon={
+            <Icon
+              size={28}
+              name="user"
+            />
+          }
+          width="95%"
+          placeholder="Họ và tên"
+          errorText={getError("name")}
           onChangeText={(v) => {
             clearError();
             dispatch({ type: "name", payload: v });
           }}
-          placeholder="Họ và tên"
-          leftIcon={{
-            name: "user",
-            type: "ant-design",
-            // color: COLOR.primary,
-          }}
-          errorMessage={getError("name")}
-          leftIconContainerStyle={{
-            marginRight: 10,
-          }}
-          inputContainerStyle={{
-            borderRadius: 10,
-            backgroundColor: "white",
-            borderWidth: 0.5,
-            paddingHorizontal: 10,
-            borderColor: COLOR.secondaryBackground,
-          }}
         />
-        <Input
-          inputContainerStyle={{
-            borderRadius: 10,
-            backgroundColor: "white",
-            borderWidth: 0.5,
-            paddingHorizontal: 10,
-            borderColor: COLOR.secondaryBackground,
-          }}
+        <CustomInput
+          leftIcon={
+            <Icon
+              size={28}
+              name="lock"
+            />
+          }
+          rightIcon={
+            <TouchableOpacity onPress={() => setShowPass((v) => !v)}>
+              <Icon
+                size={28}
+                name={showPass ? "hidden" : "view"}
+              />
+            </TouchableOpacity>
+          }
+          width="95%"
           placeholder="Mật khẩu"
-          errorMessage={getError("password")}
+          secureTextEntry={!showPass}
+          errorText={getError("password")}
           onChangeText={(v) => {
             clearError();
             dispatch({ type: "pass", payload: v });
           }}
-          secureTextEntry={!showPass}
-          leftIcon={{
-            name: "lock",
-            type: "font-awesome",
-            // color: COLOR.primary,
-          }}
-          leftIconContainerStyle={{
-            marginRight: 10,
-          }}
-          rightIcon={{
-            name: showPass ? "eye" : "eye-slash",
-            type: "font-awesome",
-            // color: COLOR.primary,
-            onPress: () => setShowPass(!showPass),
-          }}
         />
-        <Input
-          inputContainerStyle={{
-            borderRadius: 10,
-            backgroundColor: "white",
-            borderWidth: 0.5,
-            paddingHorizontal: 10,
-            borderColor: COLOR.secondaryBackground,
-          }}
+        <CustomInput
+          leftIcon={
+            <Icon
+              size={28}
+              name="lock"
+            />
+          }
+          rightIcon={
+            <TouchableOpacity onPress={() => setShowPass((v) => !v)}>
+              <Icon
+                size={28}
+                name={showPass ? "hidden" : "view"}
+              />
+            </TouchableOpacity>
+          }
+          width="95%"
           placeholder="Mật khẩu xác nhận"
-          errorMessage={getError("confirm")}
+          secureTextEntry={!showPass}
+          errorText={getError("confirm")}
           onChangeText={(v) => {
             clearError();
             dispatch({ type: "confirm", payload: v });
           }}
-          secureTextEntry={!showPass}
-          leftIcon={{
-            name: "lock",
-            type: "font-awesome",
-            // color: COLOR.primary,
-          }}
-          leftIconContainerStyle={{
-            marginRight: 10,
-          }}
-          rightIcon={{
-            name: showPass ? "eye" : "eye-slash",
-            type: "font-awesome",
-            // color: COLOR.primary,
-            onPress: () => setShowPass(!showPass),
-          }}
         />
+
         <Button
           titleStyle={{
             fontWeight: "bold",
