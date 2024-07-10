@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { ICON } from "../../constants/image";
 import { useAppDispatch, useAppSelector } from "../../states";
 import {
   DriverRegisterState,
@@ -25,7 +24,7 @@ const CccdTab = () => {
       <Title title="Thông tin CCCD/CMND" />
       <View style={{ flexDirection: "row", gap: 10 }}>
         <SelectImage
-          source={frontImageSource ?? undefined}
+          source={frontImageSource}
           label="Ảnh mặt trước"
           onChange={(img) => {
             dispatch(
@@ -34,7 +33,7 @@ const CccdTab = () => {
           }}
         />
         <SelectImage
-          source={backImageSource ?? undefined}
+          source={backImageSource}
           label="Ảnh mặt sau"
           onChange={(img) => {
             dispatch(
@@ -45,32 +44,32 @@ const CccdTab = () => {
       </View>
       <View style={{ marginTop: 10 }}>
         <CustomInput
-          leftIcon={<Icon source={ICON.user} />}
+          leftIcon={<Icon name="user" />}
           placeholder="Họ và tên"
           onChangeText={handleChange("fullName")}
         />
         <CustomInput
-          leftIcon={<Icon source={ICON.birthday} />}
+          leftIcon={<Icon name="birthday" />}
           placeholder="Ngày sinh (Tháng/Ngày/Năm)"
           onChangeText={handleChange("birthday")}
         />
         <CustomInput
-          leftIcon={<Icon source={ICON.idCard} />}
+          leftIcon={<Icon name="idCard" />}
           placeholder="Số CCCD/CMND"
           onChangeText={handleChange("number")}
         />
         <CustomInput
-          leftIcon={<Icon source={ICON.location} />}
+          leftIcon={<Icon name="location" />}
           placeholder="Nơi cấp"
           onChangeText={handleChange("address")}
         />
         <CustomInput
-          leftIcon={<Icon source={ICON.calendar} />}
+          leftIcon={<Icon name="calendar" />}
           placeholder="Ngày cấp (Tháng/Ngày/Năm)"
           onChangeText={handleChange("issueDate")}
         />
         <CustomInput
-          leftIcon={<Icon source={ICON.expired} />}
+          leftIcon={<Icon name="expired" />}
           placeholder="Ngày hết hạn (Tháng/Ngày/Năm)"
           onChangeText={handleChange("expireDate")}
         />

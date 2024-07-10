@@ -1,12 +1,28 @@
-import React from 'react';
-import { Image, ImageSourcePropType, StyleSheet, ImageProps } from 'react-native';
+import React from "react";
+import {
+  Image,
+  ImageProps,
+  ImageSourcePropType,
+  StyleSheet,
+} from "react-native";
+import { ICON } from "../../constants/image";
 
-interface IconProps extends ImageProps {
-  source: ImageSourcePropType;
-}
+type IconSource =
+  | { source: ImageSourcePropType; name?: undefined }
+  | { name: keyof typeof ICON; source?: undefined };
 
-const Icon: React.FC<IconProps> = ({ source, style, ...rest }) => {
-  return <Image source={source} style={[styles.icon, style]} {...rest} />;
+type IconProps = ImageProps & IconSource;
+
+const Icon: React.FC<IconProps> = (props) => {
+  const { source, name, style, ...rest } = props;
+  const src = source ?? ICON[name];
+  return (
+    <Image
+      source={src}
+      style={[styles.icon, style]}
+      {...rest}
+    />
+  );
 };
 
 const styles = StyleSheet.create({

@@ -6,7 +6,7 @@ import { COLOR } from "../../constants/color";
 import { IMAGE } from "../../constants/image";
 
 type SelectImageProps = {
-  source?: ImagePicker.ImagePickerAsset;
+  source?: ImagePicker.ImagePickerAsset | null;
   label?: string;
 } & (
   | {
@@ -57,7 +57,7 @@ const SelectImage = (props: SelectImageProps) => {
           width: "100%",
           backgroundColor: "#ebf4ffff",
         }}
-        source={source}
+        source={source ?? undefined}
       />
       <View
         style={{

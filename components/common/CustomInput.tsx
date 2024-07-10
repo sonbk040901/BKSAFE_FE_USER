@@ -1,10 +1,10 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import {
-  View,
+  StyleSheet,
   Text,
   TextInput,
-  StyleSheet,
   TextInputProps,
+  View,
 } from "react-native";
 import { COLOR } from "../../constants/color";
 
@@ -22,18 +22,34 @@ const CustomInput: React.FC<CustomInputProps> = ({
   rightIcon,
   ...rest
 }) => {
+  const inputRef = useRef<TextInput>(null);
+  const [focussed, setFocussed] = useState(false);
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.inputContainer}>
+      <View
+        style={[
+          styles.inputContainer,
+          focussed ? { borderColor: COLOR.secondaryBackground } : null,
+        ]}
+      >
         {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
         <TextInput
+          ref={inputRef}
           style={[
             styles.input,
             leftIcon ? { paddingLeft: 35 } : null,
             rightIcon ? { paddingRight: 35 } : null,
           ]}
           {...rest}
+          onFocus={(e) => {
+            rest.onFocus?.(e);
+            setFocussed(true);
+          }}
+          onBlur={(e) => {
+            rest.onBlur?.(e);
+            setFocussed(false);
+          }}
         />
         {rightIcon && (
           <View style={styles.rightIconContainer}>{rightIcon}</View>
@@ -59,13 +75,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 1,
   },
   input: {
     flex: 1,
     height: 40,
-    fontSize: 16,
+    fontSize: 17,
     color: "#333",
   },
   leftIconContainer: {
