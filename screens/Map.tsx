@@ -2,7 +2,7 @@ import { Button } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Circle } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated from "react-native-reanimated";
 import { BookingStatus, Driver } from "../api";
@@ -63,7 +63,7 @@ const Map = ({ navigation }: MapProps) => {
             pitch: 0,
             heading: 0,
             altitude: 0,
-            zoom: 15,
+            zoom: 12.5,
           },
           { duration: 1500 },
         );
@@ -229,7 +229,7 @@ const Map = ({ navigation }: MapProps) => {
             </Marker>
           );
         })}
-        {!driver &&
+        {!status &&
           drivers.map((d) => (
             <Marker
               key={d.id}
@@ -242,6 +242,16 @@ const Map = ({ navigation }: MapProps) => {
             title="Tài xế của bạn"
             coordinate={driver.location}
             image={IMAGE.driverPin}
+          />
+        )}
+
+        {!status && (
+          <Circle
+            center={locations[0]}
+            radius={5000}
+            fillColor="#abd2ff35"
+            strokeColor={COLOR.primary}
+            strokeWidth={1}
           />
         )}
       </MapView>

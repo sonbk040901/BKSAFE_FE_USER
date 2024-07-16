@@ -91,9 +91,7 @@ function Footer(props: FooterProps) {
           <DriverInfo driverProps={driver ?? undefined} />
         </View>
       )}
-      <View style={{ width: "100%" }}>
-        <Divider />
-      </View>
+      <View style={{ width: "100%" }}>{driver && <Divider />}</View>
       {!status ? (
         <View style={styles.tool}>
           <Button
@@ -244,8 +242,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
-    borderWidth: 0.5,
-    borderColor: COLOR.secondaryBackground,
+    // borderTopWidth: 0.5,
+    // borderColor: COLOR.secondaryBackground,
   },
   tool: {
     flexDirection: "row",
